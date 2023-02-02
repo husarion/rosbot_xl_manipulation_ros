@@ -1,0 +1,68 @@
+/**:
+  ros__parameters:
+    joint_names: ["joint1", "joint2", "joint3", "joint4"]
+    # Angle configuration of manipulator in the home position
+    # (joint1, joint2, joint3, joint4)
+    home_joint_configuration: [0.0, 0.0, 0.0, 0.0]
+    end_effector_name: "end_effector_link"
+
+    axis_deadzone: 0.05
+
+    joint_control_velocity: 1.6 # rad/s
+    cartesian_control_velocity_linear: 0.2 # m/s
+    cartesian_control_velocity_angular: 0.8 # rad/s
+    
+    cartesian_control_reference_frame: "link2"
+
+    dead_man_switch:
+      control_type: "single_button"
+      button_id: 5
+
+    home_manipulator:
+      control_type: "single_button"
+      button_id: 9
+
+    # Cartesian control
+    cartesian_control_names: ["linear_x", "linear_y", "linear_z", "angular_y"]
+    cartesian_control:
+      linear_x:
+        control_type: "axis"
+        axis_id: 1
+      linear_y:
+        control_type: "axis"
+        axis_id: 0
+      linear_z:
+        control_type: "axis"
+        axis_id: 3
+      angular_y:
+        control_type: "axis"
+        axis_id: 2
+
+    joints_control:
+      joint1:
+        control_type: "axis"
+        axis_id: 4
+      joint2:
+        control_type: "axis"
+        axis_id: 5
+        inverted: true
+      joint3:
+        control_type: "double_button"
+        positive_button_id: 0
+        negative_button_id: 2
+      joint4:
+        control_type: "double_button"
+        positive_button_id: 1
+        negative_button_id: 3
+
+    gripper_control:
+      joint_names: ["gripper_left_joint"]
+      open:
+        control_type: "single_button"
+        button_id: 6
+        position: 0.009
+      close:
+        control_type: "single_button"
+        button_id: 7
+        position: -0.009
+      
