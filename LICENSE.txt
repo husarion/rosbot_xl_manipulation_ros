@@ -1,4 +1,0 @@
-ROSBOT XL MANIPULATION ROS PACKAGE LICENSING
-The default license for ROSbot XL manipulation ROS package is the Apache License, Version 2.0 
-(see LICENSE_APACHE2.txt); you may elect at your option to use the ROSbot XL MANIPULATION ROS 
-package under the MIT License (see LICENSE_MIT.txt).  Contributions must be made under both licenses.
