@@ -19,9 +19,9 @@
   <depend>rosbot_xl_manipulation_bringup</depend>
   <depend>rosbot_xl_manipulation_description</depend>
   <depend>rosbot_xl_manipulation_controller</depend>
-  <depend >rosbot_xl_manipulation_moveit</depend>
+  <depend>rosbot_xl_manipulation_moveit</depend>
 
-  <depend condition="$rosbot_xl_manipulation_ROS_BUILD == simulation">rosbot_xl_manipulation_gazebo</depend>
+  <depend condition="$ROSBOT_XL_ROS_BUILD == simulation">rosbot_xl_manipulation_gazebo</depend>
 
   <export>
     <build_type>ament_cmake</build_type>

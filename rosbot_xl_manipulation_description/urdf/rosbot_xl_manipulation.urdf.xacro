@@ -29,7 +29,6 @@
     use_sim="$(arg use_sim)"
     collision_enabled="$(arg manipulator_collision_enabled)" 
     usb_port="$(arg manipulator_usb_port)" 
-    baud_rate="$(arg manipulator_baud_rate)" 
-    />
+    baud_rate="$(arg manipulator_baud_rate)" />
 
 </robot>
