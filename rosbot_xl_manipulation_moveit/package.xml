@@ -23,21 +23,22 @@
   <exec_depend>moveit_simple_controller_manager</exec_depend>
   <exec_depend>moveit_configs_utils</exec_depend>
   <exec_depend>moveit_ros_move_group</exec_depend>
-  <exec_depend>moveit_ros_visualization</exec_depend>
-  <exec_depend>moveit_setup_assistant</exec_depend>
 
   <exec_depend>robot_state_publisher</exec_depend>
   <exec_depend>joint_state_publisher</exec_depend>
-  <exec_depend>joint_state_publisher_gui</exec_depend>
   
   <exec_depend>tf2_ros</exec_depend>
   <exec_depend>xacro</exec_depend>
 
   <exec_depend>controller_manager</exec_depend>
 
-  <exec_depend>rviz2</exec_depend>
-  <exec_depend>rviz_common</exec_depend>
-  <exec_depend>rviz_default_plugins</exec_depend>
+  <!-- Hardware is intended to run in headless mode, without GUI, install GUI utils only in simulation build -->
+  <exec_depend condition="$ROSBOT_XL_ROS_BUILD == simulation">rviz2</depend>
+  <exec_depend condition="$ROSBOT_XL_ROS_BUILD == simulation">rviz_common</depend>
+  <exec_depend condition="$ROSBOT_XL_ROS_BUILD == simulation">rviz_default_plugins</depend>
+  <exec_depend condition="$ROSBOT_XL_ROS_BUILD == simulation">joint_state_publisher_gui</depend>
+  <exec_depend condition="$ROSBOT_XL_ROS_BUILD == simulation">moveit_setup_assistant</depend>
+  <exec_depend condition="$ROSBOT_XL_ROS_BUILD == simulation">moveit_ros_visualization</depend>
   
   <exec_depend>rosbot_xl_manipulation_description</exec_depend>
 
