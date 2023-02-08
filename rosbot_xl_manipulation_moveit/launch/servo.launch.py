@@ -2,8 +2,9 @@ import yaml
 import os
 
 from launch import LaunchDescription
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch.actions import DeclareLaunchArgument
+from launch.conditions import IfCondition
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 
 from launch_ros.actions import Node, SetParameter
 from launch_ros.substitutions import FindPackageShare
@@ -34,6 +35,12 @@ def generate_launch_description():
         description="Whether simulation is used",
     )
 
+    launch_joy_node = LaunchConfiguration("launch_joy_node")
+    declare_launch_joy_node_arg = DeclareLaunchArgument(
+        "launch_joy_node",
+        default_value="False",
+    )
+
     joy_servo_config = LaunchConfiguration("joy_servo_params_file")
     declare_servo_joy_arg = DeclareLaunchArgument(
         "joy_servo_params_file",
@@ -56,7 +63,6 @@ def generate_launch_description():
     servo_params = {
         "moveit_servo": servo_yaml,
         "moveit_servo.use_gazebo": use_sim,
-
         # What to publish? Can save some bandwidth as most robots only require positions or velocities
         # In general velocity should be chosen, because it better integrates with setting manipulator back to Home position
         # if position publishing is used, last position, pre homing, will be once again published, which will cause
@@ -66,7 +72,7 @@ def generate_launch_description():
         # (bug only present in simulation)
         "moveit_servo.publish_joint_positions": use_sim,
         "moveit_servo.publish_joint_velocities": not use_sim,
-        "moveit_servo.publish_joint_accelerations": False
+        "moveit_servo.publish_joint_accelerations": False,
     }
 
     servo_node = Node(
@@ -88,10 +94,12 @@ def generate_launch_description():
         name="joy_servo_node",
         parameters=[joy_servo_config],
     )
+
     joy_node = Node(
         package="joy",
         executable="joy_node",
         name="joy_node",
+        condition=IfCondition(launch_joy_node),
     )
 
     start_moveit_servo_node = Node(
@@ -102,6 +110,7 @@ def generate_launch_description():
 
     actions = [
         declare_use_sim_arg,
+        declare_launch_joy_node_arg,
         declare_servo_joy_arg,
         SetParameter(name="use_sim_time", value=use_sim),
         servo_node,

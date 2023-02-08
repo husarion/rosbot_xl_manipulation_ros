@@ -57,6 +57,12 @@ def generate_launch_description():
         description="ROS2 parameters file to use with joy_servo node",
     )
 
+    launch_joy_node = LaunchConfiguration("launch_joy_node")
+    declare_launch_joy_node_arg = DeclareLaunchArgument(
+        "launch_joy_node",
+        default_value="False",
+    )
+
     controller_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             PathJoinSubstitution(
@@ -100,6 +106,7 @@ def generate_launch_description():
         launch_arguments={
             "use_sim": use_sim,
             "joy_servo_params_file": joy_servo_config,
+            "launch_joy_node": launch_joy_node,
         }.items(),
     )
 
@@ -135,6 +142,7 @@ def generate_launch_description():
         declare_manipulator_usb_port_arg,
         declare_manipulator_baud_rate_arg,
         declare_servo_joy_arg,
+        declare_launch_joy_node_arg,
         SetParameter(name="use_sim_time", value=use_sim),
         controller_launch,
         moveit_launch,

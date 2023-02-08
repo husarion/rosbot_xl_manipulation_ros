@@ -28,6 +28,12 @@ def generate_launch_description():
         description="Whether to use mecanum drive controller (otherwise diff drive controller is used)",
     )
 
+    launch_joy_node = LaunchConfiguration("launch_joy_node")
+    declare_launch_joy_node_arg = DeclareLaunchArgument(
+        "launch_joy_node",
+        default_value="False",
+    )
+
     map_package = get_package_share_directory("husarion_office_gz")
     world_file = PathJoinSubstitution([map_package, "worlds", "husarion_world.sdf"])
     world_cfg = LaunchConfiguration("world")
@@ -124,7 +130,11 @@ def generate_launch_description():
                 ]
             )
         ),
-        launch_arguments={"mecanum": mecanum, "use_sim": "True"}.items(),
+        launch_arguments={
+            "mecanum": mecanum,
+            "use_sim": "True",
+            "launch_joy_node": launch_joy_node,
+        }.items(),
     )
 
     moveit_rviz_launch = IncludeLaunchDescription(
@@ -143,6 +153,7 @@ def generate_launch_description():
     return LaunchDescription(
         [
             declare_mecanum_arg,
+            declare_launch_joy_node_arg,
             declare_world_arg,
             # Sets use_sim_time for all nodes started below (doesn't work for nodes started from ignition gazebo)
             SetParameter(name="use_sim_time", value=True),
@@ -153,7 +164,3 @@ def generate_launch_description():
             moveit_rviz_launch,
         ]
     )
-
-
-if __name__ == "__main__":
-    generate_launch_description()
