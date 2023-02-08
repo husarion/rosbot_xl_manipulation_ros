@@ -4,7 +4,11 @@ import os
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
 from launch.conditions import IfCondition
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
+from launch.substitutions import (
+    LaunchConfiguration,
+    PathJoinSubstitution,
+    PythonExpression,
+)
 
 from launch_ros.actions import Node, SetParameter
 from launch_ros.substitutions import FindPackageShare
@@ -71,7 +75,7 @@ def generate_launch_description():
         # In simulation it is necessary to publish position though - velocity causes manipulator to fall down at the start
         # (bug only present in simulation)
         "moveit_servo.publish_joint_positions": use_sim,
-        "moveit_servo.publish_joint_velocities": not use_sim,
+        "moveit_servo.publish_joint_velocities": PythonExpression(["not ", use_sim]),
         "moveit_servo.publish_joint_accelerations": False,
     }
 
