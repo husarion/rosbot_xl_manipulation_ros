@@ -53,7 +53,21 @@ def generate_launch_description():
 
     # Get parameters for the Servo node
     servo_yaml = load_yaml("rosbot_xl_manipulation_moveit", "config/servo.yaml")
-    servo_params = {"moveit_servo": servo_yaml, "moveit_servo.use_gazebo": use_sim}
+    servo_params = {
+        "moveit_servo": servo_yaml,
+        "moveit_servo.use_gazebo": use_sim,
+
+        # What to publish? Can save some bandwidth as most robots only require positions or velocities
+        # In general velocity should be chosen, because it better integrates with setting manipulator back to Home position
+        # if position publishing is used, last position, pre homing, will be once again published, which will cause
+        # manipulator to move abruptly back to position pre homing
+        # velocity publishing respects changing position of the manipulator from other source
+        # In simulation it is necessary to publish position though - velocity causes manipulator to fall down at the start
+        # (bug only present in simulation)
+        "moveit_servo.publish_joint_positions": use_sim,
+        "moveit_servo.publish_joint_velocities": not use_sim,
+        "moveit_servo.publish_joint_accelerations": False
+    }
 
     servo_node = Node(
         package="moveit_servo",

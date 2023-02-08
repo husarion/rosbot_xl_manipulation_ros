@@ -16,15 +16,6 @@ publish_period: 0.1  # 1/Nominal publish rate [seconds]
 # or trajectory_msgs/JointTrajectory (for Universal Robots and other non-ros_control robots)
 command_out_type: trajectory_msgs/JointTrajectory
 
-# What to publish? Can save some bandwidth as most robots only require positions or velocities
-# velocity chosen, because it better integrates with setting manipulator back to Home position
-# if position publishing is used, last position, pre homing, will be once again published, which will cause
-# manipulator to move abruptly back to position pre homing
-# velocity publishing respects changing position of the manipulator from other source
-publish_joint_positions: false
-publish_joint_velocities: true
-publish_joint_accelerations: false
-
 ## Plugins for smoothing outgoing commands
 smoothing_filter_plugin_name: "online_signal_smoothing::ButterworthFilterPlugin"
 
@@ -62,7 +53,7 @@ collision_check_rate: 15.0 # [Hz] Collision-checking can easily bog down a CPU i
 # "stop_distance" stops if a collision is nearer than the worst-case stopping distance and the distance is decreasing. Requires joint acceleration limits
 collision_check_type: stop_distance
 # Parameters for "threshold_distance"-type collision checking
-self_collision_proximity_threshold: 0.06 # Start decelerating when a collision is this far [m]
+self_collision_proximity_threshold: 0.04 # Start decelerating when a collision is this far [m]
 scene_collision_proximity_threshold: 0.06 # Start decelerating when a collision is this far [m]
 # Parameters for "stop_distance"-type collision checking
 collision_distance_safety_factor: 1000.0 # Must be >= 1. A large safety factor is recommended to account for latency
