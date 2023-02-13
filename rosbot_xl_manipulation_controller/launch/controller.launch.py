@@ -58,6 +58,19 @@ def generate_launch_description():
         default_value="115200",
     )
 
+    joint1_limit_min = LaunchConfiguration("joint1_limit_min")
+    declare_joint1_limit_min_arg = DeclareLaunchArgument(
+        "joint1_limit_min",
+        default_value="-2.356",
+        description="Min angle (in radians) that can be achieved by rotating joint1 of the manipulator",
+    )
+    joint1_limit_max = LaunchConfiguration("joint1_limit_max")
+    declare_joint1_limit_max_arg = DeclareLaunchArgument(
+        "joint1_limit_max",
+        default_value="5.934",
+        description="Max angle (in radians) that can be achieved by rotating joint1 of the manipulator",
+    )
+
     controller_config_name = PythonExpression(
         [
             "'mecanum_drive_controller_manipulation.yaml' if ",
@@ -104,6 +117,10 @@ def generate_launch_description():
             manipulator_baud_rate,
             " simulation_controllers_config_file:=",
             robot_controllers,
+            " joint1_limit_min:=",
+            joint1_limit_min,
+            " joint1_limit_max:=",
+            joint1_limit_max,
         ]
     )
     robot_description = {"robot_description": robot_description_content}
@@ -226,6 +243,8 @@ def generate_launch_description():
         declare_use_sim_arg,
         declare_manipulator_usb_port_arg,
         declare_manipulator_baud_rate_arg,
+        declare_joint1_limit_min_arg,
+        declare_joint1_limit_max_arg,
         SetParameter(name="use_sim_time", value=use_sim),
         control_node,
         robot_state_pub_node,

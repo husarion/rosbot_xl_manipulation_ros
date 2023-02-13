@@ -63,6 +63,19 @@ def generate_launch_description():
         default_value="False",
     )
 
+    joint1_limit_min = LaunchConfiguration("joint1_limit_min")
+    declare_joint1_limit_min_arg = DeclareLaunchArgument(
+        "joint1_limit_min",
+        default_value="-2.356",
+        description="Min angle (in radians) that can be achieved by rotating joint1 of the manipulator",
+    )
+    joint1_limit_max = LaunchConfiguration("joint1_limit_max")
+    declare_joint1_limit_max_arg = DeclareLaunchArgument(
+        "joint1_limit_max",
+        default_value="5.934",
+        description="Max angle (in radians) that can be achieved by rotating joint1 of the manipulator",
+    )
+
     controller_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             PathJoinSubstitution(
@@ -78,6 +91,8 @@ def generate_launch_description():
             "mecanum": mecanum,
             "manipulator_usb_port": manipulator_usb_port,
             "manipulator_baud_rate": manipulator_baud_rate,
+            "joint1_limit_min": joint1_limit_min,
+            "joint1_limit_max": joint1_limit_max,
         }.items(),
     )
 
@@ -143,6 +158,8 @@ def generate_launch_description():
         declare_manipulator_baud_rate_arg,
         declare_servo_joy_arg,
         declare_launch_joy_node_arg,
+        declare_joint1_limit_min_arg,
+        declare_joint1_limit_max_arg,
         SetParameter(name="use_sim_time", value=use_sim),
         controller_launch,
         moveit_launch,

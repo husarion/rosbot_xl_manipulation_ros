@@ -34,6 +34,19 @@ def generate_launch_description():
         default_value="False",
     )
 
+    joint1_limit_min = LaunchConfiguration("joint1_limit_min")
+    declare_joint1_limit_min_arg = DeclareLaunchArgument(
+        "joint1_limit_min",
+        default_value="-2.356",
+        description="Min angle (in radians) that can be achieved by rotating joint1 of the manipulator",
+    )
+    joint1_limit_max = LaunchConfiguration("joint1_limit_max")
+    declare_joint1_limit_max_arg = DeclareLaunchArgument(
+        "joint1_limit_max",
+        default_value="5.934",
+        description="Max angle (in radians) that can be achieved by rotating joint1 of the manipulator",
+    )
+
     map_package = get_package_share_directory("husarion_office_gz")
     world_file = PathJoinSubstitution([map_package, "worlds", "husarion_world.sdf"])
     world_cfg = LaunchConfiguration("world")
@@ -87,6 +100,10 @@ def generate_launch_description():
             " manipulator_collision_enabled:=False",
             " simulation_controllers_config_file:=",
             robot_controllers,
+            " joint1_limit_min:=",
+            joint1_limit_min,
+            " joint1_limit_max:=",
+            joint1_limit_max,
         ]
     )
 
@@ -134,6 +151,8 @@ def generate_launch_description():
             "mecanum": mecanum,
             "use_sim": "True",
             "launch_joy_node": launch_joy_node,
+            "joint1_limit_min": joint1_limit_min,
+            "joint1_limit_max": joint1_limit_max,
         }.items(),
     )
 
@@ -154,6 +173,8 @@ def generate_launch_description():
         [
             declare_mecanum_arg,
             declare_launch_joy_node_arg,
+            declare_joint1_limit_min_arg,
+            declare_joint1_limit_max_arg,
             declare_world_arg,
             # Sets use_sim_time for all nodes started below (doesn't work for nodes started from ignition gazebo)
             SetParameter(name="use_sim_time", value=True),

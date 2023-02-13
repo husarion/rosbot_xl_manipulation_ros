@@ -5,9 +5,11 @@
   <xacro:arg name="mecanum" default="false" />
   <xacro:arg name="manipulator_usb_port" default="/dev/ttyUSB0" />
   <xacro:arg name="manipulator_baud_rate" default="115200" />
-  <xacro:arg name="manipulator_collision_enabled" default="true" />
   <!-- collision_enabled parameter added due to collisions using visual meshes, which are very
     heavy and slow down simulation, this parameter allows to easily disable them -->
+  <xacro:arg name="manipulator_collision_enabled" default="true" />
+  <xacro:arg name="joint1_limit_min" default="-2.356" />
+  <xacro:arg name="joint1_limit_max" default="5.934" />
   <xacro:arg name="simulation_controllers_config_file"
     default="$(find rosbot_xl_manipulation_controller)/config/diff_drive_controller_manipulation.yaml" />
 
@@ -38,12 +40,14 @@
   <xacro:include
     filename="$(find open_manipulator_x_description)/urdf/open_manipulator_x_macro.urdf.xacro"
     ns="manipulator" />
-    <xacro:manipulator.open_manipulator_x parent_link="cover_link"
+  <xacro:manipulator.open_manipulator_x parent_link="cover_link"
     xyz="-0.1 0.0 0.0"
     rpy="0.0 0.0 0.0"
     use_sim="$(arg use_sim)"
     collision_enabled="$(arg manipulator_collision_enabled)"
     usb_port="$(arg manipulator_usb_port)"
-    baud_rate="$(arg manipulator_baud_rate)" />
+    baud_rate="$(arg manipulator_baud_rate)"
+    joint1_limit_min="$(arg joint1_limit_min)"
+    joint1_limit_max="$(arg joint1_limit_max)" />
 
 </robot>
