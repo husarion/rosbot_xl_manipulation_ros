@@ -10,7 +10,8 @@ from launch.substitutions import (
     PythonExpression,
 )
 
-from launch_ros.actions import Node, SetParameter
+from launch_ros.actions import ComposableNodeContainer, Node, SetParameter
+from launch_ros.descriptions import ComposableNode
 from launch_ros.substitutions import FindPackageShare
 
 from moveit_configs_utils import MoveItConfigsBuilder
@@ -92,11 +93,20 @@ def generate_launch_description():
         output="screen",
     )
 
-    joy_servo_node = Node(
-        package="rosbot_xl_manipulation_moveit",
-        executable="joy_servo_node.py",
-        name="joy_servo_node",
-        parameters=[joy_servo_config],
+    container_joy_servo = ComposableNodeContainer(
+        name="moveit_servo_demo_container",
+        namespace="/",
+        package="rclcpp_components",
+        executable="component_container_mt",
+        composable_node_descriptions=[
+            ComposableNode(
+                package="rosbot_xl_manipulation_moveit",
+                plugin="rosbot_xl_manipulation::JoyServoNode",
+                name="joy_servo_node",
+                parameters=[joy_servo_config],
+            ),
+        ],
+        output="screen",
     )
 
     joy_node = Node(
@@ -118,7 +128,7 @@ def generate_launch_description():
         declare_servo_joy_arg,
         SetParameter(name="use_sim_time", value=use_sim),
         servo_node,
-        joy_servo_node,
+        container_joy_servo,
         joy_node,
         start_moveit_servo_node,
     ]
