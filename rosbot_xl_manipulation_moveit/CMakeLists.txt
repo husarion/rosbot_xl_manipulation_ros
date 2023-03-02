@@ -8,6 +8,11 @@ set(PACKAGE_INCLUDE_DEPENDS
   rclcpp_components
   sensor_msgs
   moveit_core
+
+  moveit_msgs
+  moveit_ros_planning
+  moveit_ros_planning_interface
+  moveit_servo
 )
 
 find_package(ament_cmake REQUIRED)
