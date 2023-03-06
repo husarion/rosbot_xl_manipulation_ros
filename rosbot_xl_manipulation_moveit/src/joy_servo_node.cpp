@@ -355,13 +355,51 @@ private:
   }
 };
 
-class MoveGroupController : public Controller
+class MoveGroupManipulatorController : public Controller
 {
 public:
-  MoveGroupController(const rclcpp::Node::SharedPtr & node)
+  MoveGroupManipulatorController(const rclcpp::Node::SharedPtr & node)
   {
     move_group_manipulator_ =
       std::make_unique<moveit::planning_interface::MoveGroupInterface>(node, "manipulator");
+    ParseParameters(node);
+  }
+
+  bool Process(const sensor_msgs::msg::Joy::SharedPtr msg) override
+  {
+    if (home_manipulator_->IsPressed(msg)) {
+      MoveToHome();
+      return true;
+    }
+    return false;
+  }
+
+  void Stop() override {}
+
+private:
+  moveit::planning_interface::MoveGroupInterfacePtr move_group_manipulator_;
+
+  std::unique_ptr<JoyControl> home_manipulator_;
+
+  void ParseParameters(const rclcpp::Node::SharedPtr & node)
+  {
+    home_manipulator_ = ParseJoyControl(
+      node->get_node_parameters_interface(), node->get_node_logging_interface(),
+      "home_manipulator");
+  }
+
+  void MoveToHome()
+  {
+    move_group_manipulator_->setNamedTarget("Home");
+    move_group_manipulator_->move();
+  }
+};
+
+class MoveGroupGripperController : public Controller
+{
+public:
+  MoveGroupGripperController(const rclcpp::Node::SharedPtr & node)
+  {
     move_group_gripper_ =
       std::make_unique<moveit::planning_interface::MoveGroupInterface>(node, "gripper");
     ParseParameters(node);
@@ -374,26 +412,18 @@ public:
     // also uses move group, which will make this code much more complicated
     if (gripper_close_->IsPressed(msg)) {
       CloseGripper();
+      return true;
     } else if (gripper_open_->IsPressed(msg)) {
       OpenGripper();
-    }
-
-    if (home_manipulator_->IsPressed(msg)) {
-      MoveToHome();
       return true;
     }
-
     return false;
   }
 
   void Stop() override {}
 
 private:
-  moveit::planning_interface::MoveGroupInterfacePtr move_group_manipulator_;
-  
   moveit::planning_interface::MoveGroupInterfacePtr move_group_gripper_;
-
-  std::unique_ptr<JoyControl> home_manipulator_;
 
   std::unique_ptr<JoyControl> gripper_close_;
   std::unique_ptr<JoyControl> gripper_open_;
@@ -406,10 +436,6 @@ private:
     gripper_close_ = ParseJoyControl(
       node->get_node_parameters_interface(), node->get_node_logging_interface(),
       "gripper_control.close");
-
-    home_manipulator_ = ParseJoyControl(
-      node->get_node_parameters_interface(), node->get_node_logging_interface(),
-      "home_manipulator");
   }
 
   void CloseGripper()
@@ -422,12 +448,6 @@ private:
   {
     move_group_gripper_->setNamedTarget("open");
     move_group_gripper_->move();
-  }
-
-  void MoveToHome()
-  {
-    move_group_manipulator_->setNamedTarget("Home");
-    move_group_manipulator_->move();
   }
 };
 
@@ -443,36 +463,32 @@ public:
       "joy", 10, std::bind(&JoyServoNode::JoyCb, this, std::placeholders::_1));
   }
 
-  void InitializeControllers()
-  {
-    controllers_.push_back(std::make_unique<MoveGroupController>(this->shared_from_this()));
-    controllers_.push_back(std::make_unique<CartesianController>(this->shared_from_this()));
-    controllers_.push_back(std::make_unique<JointController>(this->shared_from_this()));
-  }
-
 private:
-  std::vector<std::unique_ptr<Controller>> controllers_;
-  // Lazy intialization of controlles - they require having fully constructed node
-  // and shared_from_this can be called only after constructor
-  bool controllers_initialized_ = false;
-
-  std::unique_ptr<JoyControl> dead_man_switch_;
-  rclcpp::Subscription<sensor_msgs::msg::Joy>::SharedPtr joy_sub_;
-
   void JoyCb(const sensor_msgs::msg::Joy::SharedPtr msg)
   {
+    // Lazy intialization of controlles - they require having fully constructed node
+    // and shared_from_this can be called only after constructor
     if (!controllers_initialized_) {
       controllers_initialized_ = true;
       InitializeControllers();
     }
 
     if (!dead_man_switch_->IsPressed(msg)) {
-      StopManipulator();
+      StopControllers(manipulator_controllers_);
+      StopControllers(gripper_controllers_);
       return;
     }
 
+    ProcessControllers(msg, manipulator_controllers_);
+    ProcessControllers(msg, gripper_controllers_);
+  }
+
+  void ProcessControllers(
+    const sensor_msgs::msg::Joy::SharedPtr msg,
+    const std::vector<std::unique_ptr<Controller>> & controllers)
+  {
     bool no_controller_activated = true;
-    for (auto & c : controllers_) {
+    for (auto & c : controllers) {
       if (c->Process(msg)) {
         no_controller_activated = false;
         break;
@@ -480,16 +496,36 @@ private:
     }
 
     if (no_controller_activated) {
-      StopManipulator();
+      StopControllers(controllers);
     }
   }
 
-  void StopManipulator()
+  void StopControllers(const std::vector<std::unique_ptr<Controller>> & controllers)
   {
-    for (auto & c : controllers_) {
+    for (auto & c : controllers) {
       c->Stop();
     }
   }
+
+  void InitializeControllers()
+  {
+    manipulator_controllers_.push_back(
+      std::make_unique<MoveGroupManipulatorController>(this->shared_from_this()));
+    manipulator_controllers_.push_back(
+      std::make_unique<CartesianController>(this->shared_from_this()));
+    manipulator_controllers_.push_back(std::make_unique<JointController>(this->shared_from_this()));
+
+    gripper_controllers_.push_back(
+      std::make_unique<MoveGroupGripperController>(this->shared_from_this()));
+  }
+
+  std::vector<std::unique_ptr<Controller>> manipulator_controllers_;
+  std::vector<std::unique_ptr<Controller>> gripper_controllers_;
+
+  bool controllers_initialized_ = false;
+
+  std::unique_ptr<JoyControl> dead_man_switch_;
+  rclcpp::Subscription<sensor_msgs::msg::Joy>::SharedPtr joy_sub_;
 };
 }  // namespace rosbot_xl_manipulation
 
