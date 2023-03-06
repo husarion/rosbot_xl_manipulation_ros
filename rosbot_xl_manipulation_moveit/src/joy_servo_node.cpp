@@ -362,6 +362,8 @@ public:
   {
     move_group_manipulator_ =
       std::make_unique<moveit::planning_interface::MoveGroupInterface>(node, "manipulator");
+    move_group_gripper_ =
+      std::make_unique<moveit::planning_interface::MoveGroupInterface>(node, "gripper");
     ParseParameters(node);
   }
 
@@ -388,25 +390,16 @@ public:
 
 private:
   moveit::planning_interface::MoveGroupInterfacePtr move_group_manipulator_;
+  
+  moveit::planning_interface::MoveGroupInterfacePtr move_group_gripper_;
 
   std::unique_ptr<JoyControl> home_manipulator_;
+
   std::unique_ptr<JoyControl> gripper_close_;
   std::unique_ptr<JoyControl> gripper_open_;
 
-  std::string gripper_joint_name_;
-  double opened_gripper_position_;
-  double closed_gripper_position_;
-
   void ParseParameters(const rclcpp::Node::SharedPtr & node)
   {
-    node->declare_parameter<std::string>("gripper_joint_names", "gripper_left_joint");
-    gripper_joint_name_ = node->get_parameter("gripper_joint_names").as_string();
-
-    node->declare_parameters<double>(
-      "", {{"gripper_control.open.position", 0.009}, {"gripper_control.close.position", -0.009}});
-    opened_gripper_position_ = node->get_parameter("gripper_control.open.position").as_double();
-    closed_gripper_position_ = node->get_parameter("gripper_control.close.position").as_double();
-
     gripper_open_ = ParseJoyControl(
       node->get_node_parameters_interface(), node->get_node_logging_interface(),
       "gripper_control.open");
@@ -421,20 +414,14 @@ private:
 
   void CloseGripper()
   {
-    move_group_manipulator_->getNamedTargetValues("gripper").at(gripper_joint_name_) =
-      closed_gripper_position_;
-    move_group_manipulator_->setJointValueTarget(
-      move_group_manipulator_->getNamedTargetValues("gripper"));
-    move_group_manipulator_->move();
+    move_group_gripper_->setNamedTarget("close");
+    move_group_gripper_->move();
   }
 
   void OpenGripper()
   {
-    move_group_manipulator_->getNamedTargetValues("gripper").at(gripper_joint_name_) =
-      opened_gripper_position_;
-    move_group_manipulator_->setJointValueTarget(
-      move_group_manipulator_->getNamedTargetValues("gripper"));
-    move_group_manipulator_->move();
+    move_group_gripper_->setNamedTarget("open");
+    move_group_gripper_->move();
   }
 
   void MoveToHome()

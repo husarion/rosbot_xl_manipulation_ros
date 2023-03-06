@@ -53,13 +53,10 @@
         negative_button_id: 3
 
     gripper_control:
-      joint_names: ["gripper_left_joint"]
       open:
         control_type: "single_button"
         button_id: 6
-        position: 0.009
       close:
         control_type: "single_button"
         button_id: 7
-        position: -0.009
       
