@@ -25,7 +25,10 @@ include_directories(
   include
 )
 
-add_library(joy_servo SHARED src/joy_servo_node.cpp)
+add_library(joy_servo SHARED 
+  src/joy_servo_node.cpp
+  src/JoyControl.cpp
+  src/MoveitControllers.cpp)
 ament_target_dependencies(joy_servo ${PACKAGE_INCLUDE_DEPENDS})
 rclcpp_components_register_nodes(joy_servo "rosbot_xl_manipulation::JoyServoNode")
 # TODO
