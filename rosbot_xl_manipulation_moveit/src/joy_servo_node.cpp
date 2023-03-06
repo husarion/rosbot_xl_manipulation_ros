@@ -394,7 +394,6 @@ private:
   std::unique_ptr<JoyControl> gripper_open_;
 
   std::string gripper_joint_name_;
-  std::vector<double> home_joint_configuration_;
   double opened_gripper_position_;
   double closed_gripper_position_;
 
@@ -402,15 +401,6 @@ private:
   {
     node->declare_parameter<std::string>("gripper_joint_names", "gripper_left_joint");
     gripper_joint_name_ = node->get_parameter("gripper_joint_names").as_string();
-
-    node->declare_parameter("home_joint_configuration", rclcpp::PARAMETER_DOUBLE_ARRAY);
-    // TODO check ParameterUninitializedException exception
-    try {
-      home_joint_configuration_ = node->get_parameter("home_joint_configuration").as_double_array();
-    } catch (const rclcpp::exceptions::ParameterUninitializedException & e) {
-      RCLCPP_ERROR_STREAM(node->get_logger(), "Required parameter not defined: " << e.what());
-      throw e;
-    }
 
     node->declare_parameters<double>(
       "", {{"gripper_control.open.position", 0.009}, {"gripper_control.close.position", -0.009}});
@@ -449,12 +439,8 @@ private:
 
   void MoveToHome()
   {
-    move_group_manipulator_->setJointValueTarget(home_joint_configuration_);
-    moveit::planning_interface::MoveGroupInterface::Plan plan;
-    bool success = (move_group_manipulator_->plan(plan) == moveit::core::MoveItErrorCode::SUCCESS);
-    if (success) {
-      move_group_manipulator_->execute(plan);
-    }
+    move_group_manipulator_->setNamedTarget("Home");
+    move_group_manipulator_->move();
   }
 };
 

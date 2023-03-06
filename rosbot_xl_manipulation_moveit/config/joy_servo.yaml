@@ -1,9 +1,6 @@
 /**:
   ros__parameters:
     joint_names: ["joint1", "joint2", "joint3", "joint4"]
-    # Angle configuration of manipulator in the home position
-    # (joint1, joint2, joint3, joint4)
-    home_joint_configuration: [0.0, 0.0, 0.0, 0.0]
     end_effector_name: "end_effector_link"
 
     axis_deadzone: 0.05
