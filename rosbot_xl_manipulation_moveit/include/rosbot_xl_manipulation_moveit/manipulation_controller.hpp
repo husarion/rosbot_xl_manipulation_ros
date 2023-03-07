@@ -1,5 +1,5 @@
-#ifndef MOVEIT_CONTROLLERS_H
-#define MOVEIT_CONTROLLERS_H
+#ifndef ROSBOT_XL_MANIPULATION_MOVEIT_MOVEIT_CONTROLLERS_H_
+#define ROSBOT_XL_MANIPULATION_MOVEIT_MOVEIT_CONTROLLERS_H_
 
 #include <rclcpp/rclcpp.hpp>
 
@@ -10,16 +10,21 @@
 #include <moveit/move_group_interface/move_group_interface.h>
 #include <moveit/planning_scene_interface/planning_scene_interface.h>
 
-#include <rosbot_xl_manipulation_moveit/JoyControl.h>
+#include <rosbot_xl_manipulation_moveit/joy_control.hpp>
 
 namespace rosbot_xl_manipulation
 {
 
-class Controller
+class ManipulationController
 {
 public:
-  virtual void Stop() = 0;
+  /**
+   * @brief Checks if button/axis was activated, if so send a command
+   * 
+   * @returns true if any command was sent
+   */
   virtual bool Process(const sensor_msgs::msg::Joy::SharedPtr msg) = 0;
+  virtual void Stop() = 0;
 
 protected:
   bool CheckIfPressed(
@@ -31,7 +36,7 @@ protected:
     const std::map<std::string, std::unique_ptr<JoyControl>> & controls);
 };
 
-class JointController : public Controller
+class JointController : public ManipulationController
 {
 public:
   JointController(const rclcpp::Node::SharedPtr & node);
@@ -39,6 +44,11 @@ public:
   void Stop() override;
 
 private:
+  void ParseParameters(const rclcpp::Node::SharedPtr & node);
+
+  void SendJointCommand(
+    const std::vector<double> & cmds, const builtin_interfaces::msg::Time & timestamp);
+
   rclcpp::Publisher<control_msgs::msg::JointJog>::SharedPtr joint_cmds_pub_;
 
   rclcpp::node_interfaces::NodeClockInterface::SharedPtr clock_itf_;
@@ -47,23 +57,21 @@ private:
 
   std::vector<std::string> joint_names_;
   double joint_control_velocity_;
-
-  void ParseParameters(const rclcpp::Node::SharedPtr & node);
-
-  void SendJointCommand(
-    const std::vector<double> & cmds, const builtin_interfaces::msg::Time & timestamp);
 };
 
-class CartesianController : public Controller
+class CartesianController : public ManipulationController
 {
 public:
   CartesianController(const rclcpp::Node::SharedPtr & node);
-
   bool Process(const sensor_msgs::msg::Joy::SharedPtr msg) override;
-
   void Stop() override;
 
 private:
+  void ParseParameters(const rclcpp::Node::SharedPtr & node);
+
+  void SendCartesianCommand(
+    const std::vector<double> & cmds, const builtin_interfaces::msg::Time & timestamp);
+
   rclcpp::Publisher<geometry_msgs::msg::TwistStamped>::SharedPtr twist_cmds_pub_;
 
   rclcpp::node_interfaces::NodeClockInterface::SharedPtr clock_itf_;
@@ -75,52 +83,42 @@ private:
   std::string cartesian_control_reference_frame_;
   double cartesian_control_velocity_linear_;
   double cartesian_control_velocity_angular_;
-
-  void ParseParameters(const rclcpp::Node::SharedPtr & node);
-
-  void SendCartesianCommand(
-    const std::vector<double> & cmds, const builtin_interfaces::msg::Time & timestamp);
 };
 
-class MoveGroupManipulatorController : public Controller
+class ManipulatorMoveGroupController : public ManipulationController
 {
 public:
-  MoveGroupManipulatorController(const rclcpp::Node::SharedPtr & node);
-
+  ManipulatorMoveGroupController(const rclcpp::Node::SharedPtr & node);
   bool Process(const sensor_msgs::msg::Joy::SharedPtr msg) override;
-
   void Stop() override {}
 
 private:
-  moveit::planning_interface::MoveGroupInterfacePtr move_group_manipulator_;
-
-  std::unique_ptr<JoyControl> home_manipulator_;
-
   void ParseParameters(const rclcpp::Node::SharedPtr & node);
 
   void MoveToHome();
+
+  moveit::planning_interface::MoveGroupInterfacePtr move_group_manipulator_;
+
+  std::unique_ptr<JoyControl> home_manipulator_;
 };
 
-class MoveGroupGripperController : public Controller
+class GripperMoveGroupController : public ManipulationController
 {
 public:
-  MoveGroupGripperController(const rclcpp::Node::SharedPtr & node);
-
+  GripperMoveGroupController(const rclcpp::Node::SharedPtr & node);
   bool Process(const sensor_msgs::msg::Joy::SharedPtr msg) override;
-
   void Stop() override {}
 
 private:
+  void ParseParameters(const rclcpp::Node::SharedPtr & node);
+
+  void CloseGripper();
+  void OpenGripper();
+
   moveit::planning_interface::MoveGroupInterfacePtr move_group_gripper_;
 
   std::unique_ptr<JoyControl> gripper_close_;
   std::unique_ptr<JoyControl> gripper_open_;
-
-  void ParseParameters(const rclcpp::Node::SharedPtr & node);
-
-  void CloseGripper();
-
-  void OpenGripper();
 };
 
 }  // namespace rosbot_xl_manipulation

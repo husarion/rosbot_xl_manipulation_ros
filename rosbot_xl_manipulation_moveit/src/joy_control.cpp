@@ -1,4 +1,4 @@
-#include <rosbot_xl_manipulation_moveit/JoyControl.h>
+#include <rosbot_xl_manipulation_moveit/joy_control.hpp>
 
 namespace rosbot_xl_manipulation
 {
@@ -15,7 +15,7 @@ bool AxisControl::IsPressed(const sensor_msgs::msg::Joy::SharedPtr msg) const
 {
   return std::fabs(msg->axes[axis_id_]) > axis_deadzone_;
 }
-double AxisControl::GetValue(const sensor_msgs::msg::Joy::SharedPtr msg) const
+double AxisControl::GetControlValue(const sensor_msgs::msg::Joy::SharedPtr msg) const
 {
   return msg->axes[axis_id_] * scaling_;
 }
@@ -32,7 +32,7 @@ bool DoubleButtonControl::IsPressed(const sensor_msgs::msg::Joy::SharedPtr msg) 
 {
   return msg->buttons[positive_button_id_] || msg->buttons[negative_button_id_];
 }
-double DoubleButtonControl::GetValue(const sensor_msgs::msg::Joy::SharedPtr msg) const
+double DoubleButtonControl::GetControlValue(const sensor_msgs::msg::Joy::SharedPtr msg) const
 {
   return (msg->buttons[positive_button_id_] - msg->buttons[negative_button_id_]) * scaling_;
 }
@@ -47,12 +47,12 @@ bool SingleButtonControl::IsPressed(const sensor_msgs::msg::Joy::SharedPtr msg) 
 {
   return msg->buttons[button_id_];
 }
-double SingleButtonControl::GetValue(const sensor_msgs::msg::Joy::SharedPtr msg) const
+double SingleButtonControl::GetControlValue(const sensor_msgs::msg::Joy::SharedPtr msg) const
 {
   return msg->buttons[button_id_] * scaling_;
 }
 
-std::unique_ptr<JoyControl> ParseJoyControl(
+std::unique_ptr<JoyControl> JoyControlFactory(
   const rclcpp::node_interfaces::NodeParametersInterface::SharedPtr & param_itf,
   const rclcpp::node_interfaces::NodeLoggingInterface::SharedPtr & logging_itf,
   std::string param_namespace, double scaling)

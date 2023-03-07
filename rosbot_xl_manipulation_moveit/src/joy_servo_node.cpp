@@ -1,89 +1,71 @@
-#include <rclcpp/rclcpp.hpp>
-#include <rclcpp/parameter.hpp>
-
-#include <sensor_msgs/msg/joy.hpp>
-
-#include <rosbot_xl_manipulation_moveit/JoyControl.h>
-#include <rosbot_xl_manipulation_moveit/MoveitControllers.h>
+#include <rosbot_xl_manipulation_moveit/joy_servo_node.hpp>
 
 namespace rosbot_xl_manipulation
 {
-class JoyServoNode : public rclcpp::Node
+JoyServoNode::JoyServoNode(const rclcpp::NodeOptions & options) : Node("joy_servo_node", options)
 {
-public:
-  JoyServoNode(const rclcpp::NodeOptions & options) : Node("joy_servo_node", options)
-  {
-    dead_man_switch_ = ParseJoyControl(
-      this->get_node_parameters_interface(), this->get_node_logging_interface(), "dead_man_switch");
+  dead_man_switch_ = JoyControlFactory(
+    this->get_node_parameters_interface(), this->get_node_logging_interface(), "dead_man_switch");
 
-    joy_sub_ = this->create_subscription<sensor_msgs::msg::Joy>(
-      "joy", 10, std::bind(&JoyServoNode::JoyCb, this, std::placeholders::_1));
+  joy_sub_ = this->create_subscription<sensor_msgs::msg::Joy>(
+    "joy", 10, std::bind(&JoyServoNode::JoyCb, this, std::placeholders::_1));
+}
+
+void JoyServoNode::JoyCb(const sensor_msgs::msg::Joy::SharedPtr msg)
+{
+  // Lazy intialization of controlles - they require having fully constructed node
+  // and shared_from_this can be called only after constructor
+  if (!controllers_initialized_) {
+    controllers_initialized_ = true;
+    InitializeControllers();
   }
 
-private:
-  void JoyCb(const sensor_msgs::msg::Joy::SharedPtr msg)
-  {
-    // Lazy intialization of controlles - they require having fully constructed node
-    // and shared_from_this can be called only after constructor
-    if (!controllers_initialized_) {
-      controllers_initialized_ = true;
-      InitializeControllers();
-    }
-
-    if (!dead_man_switch_->IsPressed(msg)) {
-      StopControllers(manipulator_controllers_);
-      StopControllers(gripper_controllers_);
-      return;
-    }
-
-    ProcessControllers(msg, manipulator_controllers_);
-    ProcessControllers(msg, gripper_controllers_);
+  if (!dead_man_switch_->IsPressed(msg)) {
+    StopControllers(manipulator_controllers_);
+    StopControllers(gripper_controllers_);
+    return;
   }
 
-  void ProcessControllers(
-    const sensor_msgs::msg::Joy::SharedPtr msg,
-    const std::vector<std::unique_ptr<Controller>> & controllers)
-  {
-    bool no_controller_activated = true;
-    for (auto & c : controllers) {
-      if (c->Process(msg)) {
-        no_controller_activated = false;
-        break;
-      }
-    }
+  ProcessControllers(msg, manipulator_controllers_);
+  ProcessControllers(msg, gripper_controllers_);
+}
 
-    if (no_controller_activated) {
-      StopControllers(controllers);
+void JoyServoNode::ProcessControllers(
+  const sensor_msgs::msg::Joy::SharedPtr msg,
+  const std::vector<std::unique_ptr<ManipulationController>> & controllers)
+{
+  bool no_controller_activated = true;
+  for (auto & c : controllers) {
+    if (c->Process(msg)) {
+      no_controller_activated = false;
+      break;
     }
   }
 
-  void StopControllers(const std::vector<std::unique_ptr<Controller>> & controllers)
-  {
-    for (auto & c : controllers) {
-      c->Stop();
-    }
+  if (no_controller_activated) {
+    StopControllers(controllers);
   }
+}
 
-  void InitializeControllers()
-  {
-    manipulator_controllers_.push_back(
-      std::make_unique<MoveGroupManipulatorController>(this->shared_from_this()));
-    manipulator_controllers_.push_back(
-      std::make_unique<CartesianController>(this->shared_from_this()));
-    manipulator_controllers_.push_back(std::make_unique<JointController>(this->shared_from_this()));
-
-    gripper_controllers_.push_back(
-      std::make_unique<MoveGroupGripperController>(this->shared_from_this()));
+void JoyServoNode::StopControllers(
+  const std::vector<std::unique_ptr<ManipulationController>> & controllers)
+{
+  for (auto & c : controllers) {
+    c->Stop();
   }
+}
 
-  std::vector<std::unique_ptr<Controller>> manipulator_controllers_;
-  std::vector<std::unique_ptr<Controller>> gripper_controllers_;
+void JoyServoNode::InitializeControllers()
+{
+  manipulator_controllers_.push_back(
+    std::make_unique<ManipulatorMoveGroupController>(this->shared_from_this()));
+  manipulator_controllers_.push_back(
+    std::make_unique<CartesianController>(this->shared_from_this()));
+  manipulator_controllers_.push_back(std::make_unique<JointController>(this->shared_from_this()));
 
-  bool controllers_initialized_ = false;
-
-  std::unique_ptr<JoyControl> dead_man_switch_;
-  rclcpp::Subscription<sensor_msgs::msg::Joy>::SharedPtr joy_sub_;
-};
+  gripper_controllers_.push_back(
+    std::make_unique<GripperMoveGroupController>(this->shared_from_this()));
+}
 }  // namespace rosbot_xl_manipulation
 
 // Register the component with class_loader

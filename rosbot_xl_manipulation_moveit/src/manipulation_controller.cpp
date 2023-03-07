@@ -1,11 +1,11 @@
-#include <rosbot_xl_manipulation_moveit/MoveitControllers.h>
+#include <rosbot_xl_manipulation_moveit/manipulation_controller.hpp>
 
 #include <rclcpp/parameter.hpp>
 
 namespace rosbot_xl_manipulation
 {
 
-bool Controller::CheckIfPressed(
+bool ManipulationController::CheckIfPressed(
   const sensor_msgs::msg::Joy::SharedPtr msg,
   const std::map<std::string, std::unique_ptr<JoyControl>> & controls)
 {
@@ -17,7 +17,7 @@ bool Controller::CheckIfPressed(
   return false;
 }
 
-std::vector<double> Controller::CalculateCommand(
+std::vector<double> ManipulationController::CalculateCommand(
   const sensor_msgs::msg::Joy::SharedPtr msg, const std::vector<std::string> & cmd_names,
   const std::map<std::string, std::unique_ptr<JoyControl>> & controls)
 {
@@ -26,7 +26,7 @@ std::vector<double> Controller::CalculateCommand(
     if (c.second->IsPressed(msg)) {
       auto name_it = std::find(cmd_names.begin(), cmd_names.end(), c.first);
       int name_idx = std::distance(cmd_names.begin(), name_it);
-      cmds[name_idx] = c.second->GetValue(msg);
+      cmds[name_idx] = c.second->GetControlValue(msg);
     }
   }
   return cmds;
@@ -72,7 +72,7 @@ void JointController::ParseParameters(const rclcpp::Node::SharedPtr & node)
   for (const auto & joint_name : joint_names_) {
     std::string param_namespace = "joints_control." + joint_name;
 
-    manipulator_joint_controls_[joint_name] = ParseJoyControl(
+    manipulator_joint_controls_[joint_name] = JoyControlFactory(
       node->get_node_parameters_interface(), node->get_node_logging_interface(), param_namespace,
       joint_control_velocity_);
   }
@@ -160,7 +160,7 @@ void CartesianController::ParseParameters(const rclcpp::Node::SharedPtr & node)
       scaling = cartesian_control_velocity_angular_;
     }
 
-    manipulator_cartesian_controls_[cartesian_control_name] = ParseJoyControl(
+    manipulator_cartesian_controls_[cartesian_control_name] = JoyControlFactory(
       node->get_node_parameters_interface(), node->get_node_logging_interface(), param_namespace,
       scaling);
   }
@@ -182,14 +182,14 @@ void CartesianController::SendCartesianCommand(
   twist_cmds_pub_->publish(cartesian_cmd_msg);
 }
 
-MoveGroupManipulatorController::MoveGroupManipulatorController(const rclcpp::Node::SharedPtr & node)
+ManipulatorMoveGroupController::ManipulatorMoveGroupController(const rclcpp::Node::SharedPtr & node)
 {
   move_group_manipulator_ =
     std::make_unique<moveit::planning_interface::MoveGroupInterface>(node, "manipulator");
   ParseParameters(node);
 }
 
-bool MoveGroupManipulatorController::Process(const sensor_msgs::msg::Joy::SharedPtr msg)
+bool ManipulatorMoveGroupController::Process(const sensor_msgs::msg::Joy::SharedPtr msg)
 {
   if (home_manipulator_->IsPressed(msg)) {
     MoveToHome();
@@ -198,26 +198,26 @@ bool MoveGroupManipulatorController::Process(const sensor_msgs::msg::Joy::Shared
   return false;
 }
 
-void MoveGroupManipulatorController::ParseParameters(const rclcpp::Node::SharedPtr & node)
+void ManipulatorMoveGroupController::ParseParameters(const rclcpp::Node::SharedPtr & node)
 {
-  home_manipulator_ = ParseJoyControl(
+  home_manipulator_ = JoyControlFactory(
     node->get_node_parameters_interface(), node->get_node_logging_interface(), "home_manipulator");
 }
 
-void MoveGroupManipulatorController::MoveToHome()
+void ManipulatorMoveGroupController::MoveToHome()
 {
   move_group_manipulator_->setNamedTarget("Home");
   move_group_manipulator_->move();
 }
 
-MoveGroupGripperController::MoveGroupGripperController(const rclcpp::Node::SharedPtr & node)
+GripperMoveGroupController::GripperMoveGroupController(const rclcpp::Node::SharedPtr & node)
 {
   move_group_gripper_ =
     std::make_unique<moveit::planning_interface::MoveGroupInterface>(node, "gripper");
   ParseParameters(node);
 }
 
-bool MoveGroupGripperController::Process(const sensor_msgs::msg::Joy::SharedPtr msg)
+bool GripperMoveGroupController::Process(const sensor_msgs::msg::Joy::SharedPtr msg)
 {
   // Gripper commands shouldn't affect stopping manipulator, so they are not considered for
   // output of method. It would be better to move gripper to seperate controller, but it
@@ -232,23 +232,23 @@ bool MoveGroupGripperController::Process(const sensor_msgs::msg::Joy::SharedPtr 
   return false;
 }
 
-void MoveGroupGripperController::ParseParameters(const rclcpp::Node::SharedPtr & node)
+void GripperMoveGroupController::ParseParameters(const rclcpp::Node::SharedPtr & node)
 {
-  gripper_open_ = ParseJoyControl(
+  gripper_open_ = JoyControlFactory(
     node->get_node_parameters_interface(), node->get_node_logging_interface(),
     "gripper_control.open");
-  gripper_close_ = ParseJoyControl(
+  gripper_close_ = JoyControlFactory(
     node->get_node_parameters_interface(), node->get_node_logging_interface(),
     "gripper_control.close");
 }
 
-void MoveGroupGripperController::CloseGripper()
+void GripperMoveGroupController::CloseGripper()
 {
   move_group_gripper_->setNamedTarget("close");
   move_group_gripper_->move();
 }
 
-void MoveGroupGripperController::OpenGripper()
+void GripperMoveGroupController::OpenGripper()
 {
   move_group_gripper_->setNamedTarget("open");
   move_group_gripper_->move();
