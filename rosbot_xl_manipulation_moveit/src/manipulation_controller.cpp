@@ -62,7 +62,6 @@ void JointController::ParseParameters(const rclcpp::Node::SharedPtr & node)
   joint_control_velocity_ = node->get_parameter("joint_control_velocity").as_double();
 
   node->declare_parameter("joint_names", rclcpp::PARAMETER_STRING_ARRAY);
-  // TODO check ParameterUninitializedException exception
   try {
     joint_names_ = node->get_parameter("joint_names").as_string_array();
   } catch (const rclcpp::exceptions::ParameterUninitializedException & e) {
