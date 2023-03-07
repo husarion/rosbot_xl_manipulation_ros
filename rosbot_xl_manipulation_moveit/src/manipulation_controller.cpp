@@ -192,9 +192,13 @@ ManipulatorMoveGroupController::ManipulatorMoveGroupController(const rclcpp::Nod
 bool ManipulatorMoveGroupController::Process(const sensor_msgs::msg::Joy::SharedPtr msg)
 {
   if (home_manipulator_->IsPressed(msg)) {
-    MoveToHome();
+    if (!action_already_executed_) {
+      action_already_executed_ = true;
+      MoveToHome();
+    }
     return true;
   }
+  action_already_executed_ = false;
   return false;
 }
 
@@ -219,16 +223,21 @@ GripperMoveGroupController::GripperMoveGroupController(const rclcpp::Node::Share
 
 bool GripperMoveGroupController::Process(const sensor_msgs::msg::Joy::SharedPtr msg)
 {
-  // Gripper commands shouldn't affect stopping manipulator, so they are not considered for
-  // output of method. It would be better to move gripper to seperate controller, but it
-  // also uses move group, which will make this code much more complicated
   if (gripper_close_->IsPressed(msg)) {
-    CloseGripper();
+    if (!action_already_executed_) {
+      action_already_executed_ = true;
+      CloseGripper();
+    }
     return true;
   } else if (gripper_open_->IsPressed(msg)) {
-    OpenGripper();
+    if (!action_already_executed_) {
+      action_already_executed_ = true;
+      OpenGripper();
+    }
     return true;
   }
+
+  action_already_executed_ = false;
   return false;
 }
 

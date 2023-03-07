@@ -21,7 +21,7 @@ public:
   /**
    * @brief Checks if button/axis was activated, if so send a command
    * 
-   * @returns true if any command was sent
+   * @returns true if button/axis was activated
    */
   virtual bool Process(const sensor_msgs::msg::Joy::SharedPtr msg) = 0;
   virtual void Stop() = 0;
@@ -100,6 +100,10 @@ private:
   moveit::planning_interface::MoveGroupInterfacePtr move_group_manipulator_;
 
   std::unique_ptr<JoyControl> home_manipulator_;
+
+  // action of this controller should be triggered only once per button press
+  //  and require releasing button before executing again
+  bool action_already_executed_ = false;
 };
 
 class GripperMoveGroupController : public ManipulationController
@@ -119,6 +123,10 @@ private:
 
   std::unique_ptr<JoyControl> gripper_close_;
   std::unique_ptr<JoyControl> gripper_open_;
+
+  // action of this controller should be triggered only once per button press
+  //  and require releasing button before executing again
+  bool action_already_executed_ = false;
 };
 
 }  // namespace rosbot_xl_manipulation
