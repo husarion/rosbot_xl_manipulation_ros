@@ -253,13 +253,13 @@ void GripperMoveGroupController::ParseParameters(const rclcpp::Node::SharedPtr &
 
 void GripperMoveGroupController::CloseGripper()
 {
-  move_group_gripper_->setNamedTarget("close");
+  move_group_gripper_->setNamedTarget("Closed");
   move_group_gripper_->move();
 }
 
 void GripperMoveGroupController::OpenGripper()
 {
-  move_group_gripper_->setNamedTarget("open");
+  move_group_gripper_->setNamedTarget("Opened");
   move_group_gripper_->move();
 }
 
