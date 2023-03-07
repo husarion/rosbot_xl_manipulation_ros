@@ -121,8 +121,13 @@ private:
 
   moveit::planning_interface::MoveGroupInterfacePtr move_group_gripper_;
 
-  std::unique_ptr<JoyControl> gripper_close_;
-  std::unique_ptr<JoyControl> gripper_open_;
+  std::unique_ptr<JoyControl> toggle_gripper_position_;
+
+  enum GripperPosition {
+    OPENED,
+    CLOSED
+  };
+  GripperPosition gripper_position_ = GripperPosition::CLOSED;
 
   // action of this controller should be triggered only once per button press
   //  and require releasing button before executing again

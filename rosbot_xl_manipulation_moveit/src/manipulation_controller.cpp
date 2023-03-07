@@ -223,44 +223,40 @@ GripperMoveGroupController::GripperMoveGroupController(const rclcpp::Node::Share
 
 bool GripperMoveGroupController::Process(const sensor_msgs::msg::Joy::SharedPtr msg)
 {
-  if (gripper_close_->IsPressed(msg)) {
+  if (toggle_gripper_position_->IsPressed(msg)) {
     if (!action_already_executed_) {
       action_already_executed_ = true;
-      CloseGripper();
-    }
-    return true;
-  } else if (gripper_open_->IsPressed(msg)) {
-    if (!action_already_executed_) {
-      action_already_executed_ = true;
-      OpenGripper();
+      if (gripper_position_ == GripperPosition::CLOSED) {
+        OpenGripper();
+      } else if (gripper_position_ == GripperPosition::OPENED) {
+        CloseGripper();
+      }
     }
     return true;
   }
-
   action_already_executed_ = false;
   return false;
 }
 
 void GripperMoveGroupController::ParseParameters(const rclcpp::Node::SharedPtr & node)
 {
-  gripper_open_ = JoyControlFactory(
+  toggle_gripper_position_ = JoyControlFactory(
     node->get_node_parameters_interface(), node->get_node_logging_interface(),
-    "gripper_control.open");
-  gripper_close_ = JoyControlFactory(
-    node->get_node_parameters_interface(), node->get_node_logging_interface(),
-    "gripper_control.close");
+    "gripper_control.toggle");
 }
 
 void GripperMoveGroupController::CloseGripper()
 {
   move_group_gripper_->setNamedTarget("Closed");
   move_group_gripper_->move();
+  gripper_position_ = GripperPosition::CLOSED;
 }
 
 void GripperMoveGroupController::OpenGripper()
 {
   move_group_gripper_->setNamedTarget("Opened");
   move_group_gripper_->move();
+  gripper_position_ = GripperPosition::OPENED;
 }
 
 }  // namespace rosbot_xl_manipulation

@@ -8,7 +8,7 @@
     joint_control_velocity: 1.6 # rad/s
     cartesian_control_velocity_linear: 0.2 # m/s
     cartesian_control_velocity_angular: 0.8 # rad/s
-    
+
     cartesian_control_reference_frame: "link2"
 
     dead_man_switch:
@@ -53,10 +53,7 @@
         negative_button_id: 3
 
     gripper_control:
-      open:
-        control_type: "single_button"
-        button_id: 6
-      close:
+      # Toggles between opened and closed positions
+      toggle:
         control_type: "single_button"
         button_id: 7
-      
