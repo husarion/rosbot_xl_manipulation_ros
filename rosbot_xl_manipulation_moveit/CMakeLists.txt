@@ -31,11 +31,10 @@ add_library(joy_servo SHARED
   src/manipulation_controller.cpp)
 ament_target_dependencies(joy_servo ${PACKAGE_INCLUDE_DEPENDS})
 rclcpp_components_register_nodes(joy_servo "rosbot_xl_manipulation::JoyServoNode")
-# TODO
-# rclcpp_components_register_node(my_component
-#   PLUGIN "my_pkg::MyComponent"
-#   EXECUTABLE my_node
-# )
+rclcpp_components_register_node(joy_servo
+  PLUGIN "rosbot_xl_manipulation::JoyServoNode"
+  EXECUTABLE joy_servo_node
+)
 
 
 install(DIRECTORY launch DESTINATION share/${PROJECT_NAME}
