@@ -22,6 +22,9 @@ private:
     const std::vector<std::unique_ptr<ManipulationController>> & controllers);
   void StopControllers(const std::vector<std::unique_ptr<ManipulationController>> & controllers);
 
+  void StartServo();
+  void ChangeCartesianDriftDimensions();
+
   std::vector<std::unique_ptr<ManipulationController>> manipulator_controllers_;
   std::vector<std::unique_ptr<ManipulationController>> gripper_controllers_;
 

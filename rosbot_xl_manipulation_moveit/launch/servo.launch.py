@@ -94,7 +94,7 @@ def generate_launch_description():
     )
 
     container_joy_servo = ComposableNodeContainer(
-        name="moveit_servo_demo_container",
+        name="joy_servo_container",
         namespace="/",
         package="rclcpp_components",
         executable="component_container_mt",
@@ -130,7 +130,6 @@ def generate_launch_description():
         servo_node,
         container_joy_servo,
         joy_node,
-        start_moveit_servo_node,
     ]
 
     return LaunchDescription(actions)
