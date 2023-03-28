@@ -21,13 +21,6 @@ from ament_index_python.packages import get_package_share_directory
 
 
 def generate_launch_description():
-    mecanum = LaunchConfiguration("mecanum")
-    declare_mecanum_arg = DeclareLaunchArgument(
-        "mecanum",
-        default_value="False",
-        description="Whether to use mecanum drive controller (otherwise diff drive controller is used)",
-    )
-
     launch_joy_node = LaunchConfiguration("launch_joy_node")
     declare_launch_joy_node_arg = DeclareLaunchArgument(
         "launch_joy_node",
@@ -45,6 +38,20 @@ def generate_launch_description():
         "joint1_limit_max",
         default_value="5.934",
         description="Max angle (in radians) that can be achieved by rotating joint1 of the manipulator",
+    )
+    
+    antenna_angle = LaunchConfiguration("antenna_angle")
+    declare_antenna_angle_arg = DeclareLaunchArgument(
+        "antenna_angle",
+        default_value="0.0",
+        description="Angle (in radians) of the antenna. 0 angle means that antenna is in the default upward orientation",
+    )
+
+    mecanum = LaunchConfiguration("mecanum")
+    declare_mecanum_arg = DeclareLaunchArgument(
+        "mecanum",
+        default_value="False",
+        description="Whether to use mecanum drive controller (otherwise diff drive controller is used)",
     )
 
     map_package = get_package_share_directory("husarion_office_gz")
@@ -94,16 +101,18 @@ def generate_launch_description():
                     "rosbot_xl_manipulation.urdf.xacro",
                 ]
             ),
-            " mecanum:=",
-            mecanum,
-            " use_sim:=True",
             " manipulator_collision_enabled:=False",
-            " simulation_controllers_config_file:=",
-            robot_controllers,
             " joint1_limit_min:=",
             joint1_limit_min,
             " joint1_limit_max:=",
             joint1_limit_max,
+            " antenna_angle:=",
+            antenna_angle,
+            " mecanum:=",
+            mecanum,
+            " use_sim:=True",
+            " simulation_controllers_config_file:=",
+            robot_controllers,
         ]
     )
 
@@ -171,10 +180,11 @@ def generate_launch_description():
 
     return LaunchDescription(
         [
-            declare_mecanum_arg,
             declare_launch_joy_node_arg,
             declare_joint1_limit_min_arg,
             declare_joint1_limit_max_arg,
+            declare_antenna_angle_arg,
+            declare_mecanum_arg,
             declare_world_arg,
             # Sets use_sim_time for all nodes started below (doesn't work for nodes started from ignition gazebo)
             SetParameter(name="use_sim_time", value=True),

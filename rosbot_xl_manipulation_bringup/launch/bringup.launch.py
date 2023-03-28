@@ -15,21 +15,10 @@ from ament_index_python.packages import get_package_share_directory
 
 
 def generate_launch_description():
-    mecanum = LaunchConfiguration("mecanum")
-    declare_mecanum_arg = DeclareLaunchArgument(
-        "mecanum",
+    launch_joy_node = LaunchConfiguration("launch_joy_node")
+    declare_launch_joy_node_arg = DeclareLaunchArgument(
+        "launch_joy_node",
         default_value="False",
-        description=(
-            "Whether to use mecanum drive controller (otherwise diff drive controller"
-            " is used)"
-        ),
-    )
-
-    use_sim = LaunchConfiguration("use_sim")
-    declare_use_sim_arg = DeclareLaunchArgument(
-        "use_sim",
-        default_value="False",
-        description="Whether simulation is used",
     )
 
     manipulator_usb_port = LaunchConfiguration("manipulator_usb_port")
@@ -57,12 +46,6 @@ def generate_launch_description():
         description="ROS2 parameters file to use with joy_servo node",
     )
 
-    launch_joy_node = LaunchConfiguration("launch_joy_node")
-    declare_launch_joy_node_arg = DeclareLaunchArgument(
-        "launch_joy_node",
-        default_value="False",
-    )
-
     joint1_limit_min = LaunchConfiguration("joint1_limit_min")
     declare_joint1_limit_min_arg = DeclareLaunchArgument(
         "joint1_limit_min",
@@ -76,6 +59,30 @@ def generate_launch_description():
         description="Max angle (in radians) that can be achieved by rotating joint1 of the manipulator",
     )
 
+    antenna_angle = LaunchConfiguration("antenna_angle")
+    declare_antenna_angle_arg = DeclareLaunchArgument(
+        "antenna_angle",
+        default_value="0.0",
+        description="Angle (in radians) of the antenna. 0 angle means that antenna is in the default upward orientation",
+    )
+
+    mecanum = LaunchConfiguration("mecanum")
+    declare_mecanum_arg = DeclareLaunchArgument(
+        "mecanum",
+        default_value="False",
+        description=(
+            "Whether to use mecanum drive controller (otherwise diff drive controller"
+            " is used)"
+        ),
+    )
+
+    use_sim = LaunchConfiguration("use_sim")
+    declare_use_sim_arg = DeclareLaunchArgument(
+        "use_sim",
+        default_value="False",
+        description="Whether simulation is used",
+    )
+
     controller_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             PathJoinSubstitution(
@@ -87,12 +94,13 @@ def generate_launch_description():
             )
         ),
         launch_arguments={
-            "use_sim": use_sim,
-            "mecanum": mecanum,
             "manipulator_usb_port": manipulator_usb_port,
             "manipulator_baud_rate": manipulator_baud_rate,
             "joint1_limit_min": joint1_limit_min,
             "joint1_limit_max": joint1_limit_max,
+            "antenna_angle": antenna_angle,
+            "mecanum": mecanum,
+            "use_sim": use_sim,
         }.items(),
     )
 
@@ -152,14 +160,15 @@ def generate_launch_description():
     )
 
     actions = [
-        declare_mecanum_arg,
-        declare_use_sim_arg,
+        declare_servo_joy_arg,
         declare_manipulator_usb_port_arg,
         declare_manipulator_baud_rate_arg,
-        declare_servo_joy_arg,
         declare_launch_joy_node_arg,
         declare_joint1_limit_min_arg,
         declare_joint1_limit_max_arg,
+        declare_antenna_angle_arg,
+        declare_mecanum_arg,
+        declare_use_sim_arg,
         SetParameter(name="use_sim_time", value=use_sim),
         controller_launch,
         moveit_launch,
