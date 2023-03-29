@@ -27,6 +27,19 @@ def generate_launch_description():
         default_value="False",
     )
 
+    joy_servo_config = LaunchConfiguration("joy_servo_params_file")
+    declare_joy_servo_config_arg = DeclareLaunchArgument(
+        "joy_servo_params_file",
+        default_value=PathJoinSubstitution(
+            [
+                FindPackageShare("rosbot_xl_manipulation_moveit"),
+                "config",
+                "joy_servo.yaml",
+            ]
+        ),
+        description="ROS2 parameters file to use with joy_servo node",
+    )
+
     joint1_limit_min = LaunchConfiguration("joint1_limit_min")
     declare_joint1_limit_min_arg = DeclareLaunchArgument(
         "joint1_limit_min",
@@ -40,9 +53,9 @@ def generate_launch_description():
         description="Max angle (in radians) that can be achieved by rotating joint1 of the manipulator",
     )
     
-    antenna_angle = LaunchConfiguration("antenna_angle")
-    declare_antenna_angle_arg = DeclareLaunchArgument(
-        "antenna_angle",
+    antenna_rotation_angle = LaunchConfiguration("antenna_rotation_angle")
+    declare_antenna_rotation_angle_arg = DeclareLaunchArgument(
+        "antenna_rotation_angle",
         default_value="0.0",
         description="Angle (in radians) of the antenna. 0 angle means that antenna is in the default upward orientation",
     )
@@ -106,8 +119,8 @@ def generate_launch_description():
             joint1_limit_min,
             " joint1_limit_max:=",
             joint1_limit_max,
-            " antenna_angle:=",
-            antenna_angle,
+            " antenna_rotation_angle:=",
+            antenna_rotation_angle,
             " mecanum:=",
             mecanum,
             " use_sim:=True",
@@ -157,11 +170,13 @@ def generate_launch_description():
             )
         ),
         launch_arguments={
-            "mecanum": mecanum,
-            "use_sim": "True",
             "launch_joy_node": launch_joy_node,
+            "joy_servo_config": joy_servo_config,
             "joint1_limit_min": joint1_limit_min,
             "joint1_limit_max": joint1_limit_max,
+            "antenna_rotation_angle": antenna_rotation_angle,
+            "mecanum": mecanum,
+            "use_sim": "True",
         }.items(),
     )
 
@@ -181,9 +196,10 @@ def generate_launch_description():
     return LaunchDescription(
         [
             declare_launch_joy_node_arg,
+            declare_joy_servo_config_arg,
             declare_joint1_limit_min_arg,
             declare_joint1_limit_max_arg,
-            declare_antenna_angle_arg,
+            declare_antenna_rotation_angle_arg,
             declare_mecanum_arg,
             declare_world_arg,
             # Sets use_sim_time for all nodes started below (doesn't work for nodes started from ignition gazebo)

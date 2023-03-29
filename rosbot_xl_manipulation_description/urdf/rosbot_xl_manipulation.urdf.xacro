@@ -8,7 +8,7 @@
   <xacro:arg name="manipulator_collision_enabled" default="true" />
   <xacro:arg name="joint1_limit_min" default="-2.356" />
   <xacro:arg name="joint1_limit_max" default="5.934" />
-  <xacro:arg name="antenna_angle" default="0.0" />
+  <xacro:arg name="antenna_rotation_angle" default="0.0" />
   <xacro:arg name="mecanum" default="false" />
   <xacro:arg name="use_sim" default="false" />
   <xacro:arg name="simulation_engine" default="ignition-gazebo" />
@@ -26,8 +26,8 @@
   <xacro:antenna.antenna
     parent_link="body_link"
     xyz="-0.155 -0.055 0.065"
-    rpy="0.0 0.0 0.0"
-    antenna_angle="$(arg antenna_angle)" />
+    rpy="$(arg antenna_rotation_angle) 0.0 0.0"
+    antenna_angle="0.0" />
 
     <xacro:include filename="$(find ros_components_description)/urdf/slamtec_rplidar_s1.urdf.xacro"
     ns="lidar" />

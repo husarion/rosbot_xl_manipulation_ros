@@ -34,7 +34,7 @@ def generate_launch_description():
     )
 
     joy_servo_config = LaunchConfiguration("joy_servo_params_file")
-    declare_servo_joy_arg = DeclareLaunchArgument(
+    declare_joy_servo_config_arg = DeclareLaunchArgument(
         "joy_servo_params_file",
         default_value=PathJoinSubstitution(
             [
@@ -59,9 +59,9 @@ def generate_launch_description():
         description="Max angle (in radians) that can be achieved by rotating joint1 of the manipulator",
     )
 
-    antenna_angle = LaunchConfiguration("antenna_angle")
-    declare_antenna_angle_arg = DeclareLaunchArgument(
-        "antenna_angle",
+    antenna_rotation_angle = LaunchConfiguration("antenna_rotation_angle")
+    declare_antenna_rotation_angle_arg = DeclareLaunchArgument(
+        "antenna_rotation_angle",
         default_value="0.0",
         description="Angle (in radians) of the antenna. 0 angle means that antenna is in the default upward orientation",
     )
@@ -98,7 +98,7 @@ def generate_launch_description():
             "manipulator_baud_rate": manipulator_baud_rate,
             "joint1_limit_min": joint1_limit_min,
             "joint1_limit_max": joint1_limit_max,
-            "antenna_angle": antenna_angle,
+            "antenna_rotation_angle": antenna_rotation_angle,
             "mecanum": mecanum,
             "use_sim": use_sim,
         }.items(),
@@ -114,7 +114,13 @@ def generate_launch_description():
                 ]
             )
         ),
-        launch_arguments={"use_sim": use_sim}.items(),
+        launch_arguments={
+            "joint1_limit_min": joint1_limit_min,
+            "joint1_limit_max": joint1_limit_max,
+            "antenna_rotation_angle": antenna_rotation_angle,
+            "mecanum": mecanum,
+            "use_sim": use_sim,
+        }.items(),
     )
     servo_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -127,9 +133,13 @@ def generate_launch_description():
             )
         ),
         launch_arguments={
-            "use_sim": use_sim,
-            "joy_servo_params_file": joy_servo_config,
             "launch_joy_node": launch_joy_node,
+            "joy_servo_params_file": joy_servo_config,
+            "joint1_limit_min": joint1_limit_min,
+            "joint1_limit_max": joint1_limit_max,
+            "antenna_rotation_angle": antenna_rotation_angle,
+            "mecanum": mecanum,
+            "use_sim": use_sim,
         }.items(),
     )
 
@@ -160,13 +170,13 @@ def generate_launch_description():
     )
 
     actions = [
-        declare_servo_joy_arg,
+        declare_joy_servo_config_arg,
         declare_manipulator_usb_port_arg,
         declare_manipulator_baud_rate_arg,
         declare_launch_joy_node_arg,
         declare_joint1_limit_min_arg,
         declare_joint1_limit_max_arg,
-        declare_antenna_angle_arg,
+        declare_antenna_rotation_angle_arg,
         declare_mecanum_arg,
         declare_use_sim_arg,
         SetParameter(name="use_sim_time", value=use_sim),
