@@ -44,7 +44,7 @@
     filename="$(find open_manipulator_x_description)/urdf/open_manipulator_x_macro.urdf.xacro"
     ns="manipulator" />
   <xacro:manipulator.open_manipulator_x parent_link="cover_link"
-    xyz="-0.1 0.0 0.0"
+    xyz="-0.122 0.0 0.0"
     rpy="0.0 0.0 0.0"
     use_sim="$(arg use_sim)"
     collision_enabled="$(arg manipulator_collision_enabled)"
