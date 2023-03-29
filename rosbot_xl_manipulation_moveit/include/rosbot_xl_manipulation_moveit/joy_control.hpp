@@ -11,6 +11,8 @@ namespace rosbot_xl_manipulation
 class JoyControl
 {
 public:
+  virtual ~JoyControl() = default;
+  
   virtual bool IsPressed(const sensor_msgs::msg::Joy::SharedPtr msg) const = 0;
   virtual double GetControlValue(const sensor_msgs::msg::Joy::SharedPtr msg) const = 0;
 };

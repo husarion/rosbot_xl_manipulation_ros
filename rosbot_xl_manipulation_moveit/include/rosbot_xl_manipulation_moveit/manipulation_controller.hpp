@@ -18,6 +18,8 @@ namespace rosbot_xl_manipulation
 class ManipulationController
 {
 public:
+  virtual ~ManipulationController() = default;
+
   /**
    * @brief Checks if button/axis was activated, if so send a command
    * 
