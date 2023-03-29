@@ -118,7 +118,7 @@ def generate_launch_description():
                 [
                     FindPackageShare("rosbot_xl_manipulation_description"),
                     "urdf",
-                    "rosbot_xl_manipulation_2.urdf.xacro",
+                    "rosbot_xl_manipulation.urdf.xacro",
                 ]
             ),
             " manipulator_collision_enabled:=True",
