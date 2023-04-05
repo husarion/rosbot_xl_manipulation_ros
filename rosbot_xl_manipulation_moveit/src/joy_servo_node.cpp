@@ -6,6 +6,7 @@
 
 namespace rosbot_xl_manipulation
 {
+
 JoyServoNode::JoyServoNode(const rclcpp::NodeOptions & options) : Node("joy_servo_node", options)
 {
   dead_man_switch_ = JoyControlFactory(
@@ -118,6 +119,7 @@ void JoyServoNode::InitializeControllers()
   gripper_controllers_.push_back(
     std::make_unique<GripperMoveGroupController>(this->shared_from_this()));
 }
+
 }  // namespace rosbot_xl_manipulation
 
 // Register the component with class_loader

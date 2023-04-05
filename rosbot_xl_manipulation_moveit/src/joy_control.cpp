@@ -99,4 +99,5 @@ std::unique_ptr<JoyControl> JoyControlFactory(
 
   return controller;
 }
+
 }  // namespace rosbot_xl_manipulation
