@@ -1,3 +1,9 @@
+#ifndef ROSBOT_XL_MANIPULATION_MOVEIT_JOY_SERVO_NODE_H_
+#define ROSBOT_XL_MANIPULATION_MOVEIT_JOY_SERVO_NODE_H_
+
+#include <memory>
+#include <vector>
+
 #include <rclcpp/rclcpp.hpp>
 #include <rclcpp/parameter.hpp>
 
@@ -32,6 +38,8 @@ private:
 
   std::unique_ptr<JoyControl> dead_man_switch_;
   
-  rclcpp::Subscription<sensor_msgs::msg::Joy>::SharedPtr joy_sub_;
+  rclcpp::Subscription<sensor_msgs::msg::Joy>::SharedPtr joy_sub_; 
 };
 }  // namespace rosbot_xl_manipulation
+
+#endif
