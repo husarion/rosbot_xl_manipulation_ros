@@ -58,9 +58,6 @@ void JointController::Stop()
 
 void JointController::ParseParameters(const rclcpp::Node::SharedPtr & node)
 {
-  node->declare_parameter("joint_control_velocity", 0.5);
-  joint_control_velocity_ = node->get_parameter("joint_control_velocity").as_double();
-
   node->declare_parameter("joint_names", rclcpp::PARAMETER_STRING_ARRAY);
   try {
     joint_names_ = node->get_parameter("joint_names").as_string_array();
@@ -71,9 +68,16 @@ void JointController::ParseParameters(const rclcpp::Node::SharedPtr & node)
   for (const auto & joint_name : joint_names_) {
     std::string param_namespace = "joints_control." + joint_name;
 
-    manipulator_joint_controls_[joint_name] = JoyControlFactory(
-      node->get_node_parameters_interface(), node->get_node_logging_interface(), param_namespace,
-      joint_control_velocity_);
+    node->declare_parameter(param_namespace + ".max_velocity", rclcpp::PARAMETER_DOUBLE);
+    try {
+      double max_velocity = node->get_parameter(param_namespace + ".max_velocity").as_double();
+      manipulator_joint_controls_[joint_name] = JoyControlFactory(
+        node->get_node_parameters_interface(), node->get_node_logging_interface(), param_namespace,
+        max_velocity);
+    } catch (const rclcpp::exceptions::ParameterUninitializedException & e) {
+      RCLCPP_ERROR_STREAM(node->get_logger(), "Required parameter not defined: " << e.what());
+      throw e;
+    }
   }
 }
 
@@ -123,16 +127,6 @@ void CartesianController::ParseParameters(const rclcpp::Node::SharedPtr & node)
   cartesian_control_reference_frame_ =
     node->get_parameter("cartesian_control_reference_frame").as_string();
 
-  node->declare_parameters<double>(
-    "", {
-          {"cartesian_control_velocity_linear", 0.1},
-          {"cartesian_control_velocity_angular", 0.4},
-        });
-  cartesian_control_velocity_linear_ =
-    node->get_parameter("cartesian_control_velocity_linear").as_double();
-  cartesian_control_velocity_angular_ =
-    node->get_parameter("cartesian_control_velocity_angular").as_double();
-
   node->declare_parameter("cartesian_control_names", rclcpp::PARAMETER_STRING_ARRAY);
   try {
     cartesian_control_names_ = node->get_parameter("cartesian_control_names").as_string_array();
@@ -152,16 +146,16 @@ void CartesianController::ParseParameters(const rclcpp::Node::SharedPtr & node)
     }
     std::string param_namespace = "cartesian_control." + cartesian_control_name;
 
-    double scaling = 1.0;
-    if (cartesian_control_name.find("linear") != std::string::npos) {
-      scaling = cartesian_control_velocity_linear_;
-    } else if (cartesian_control_name.find("angular") != std::string::npos) {
-      scaling = cartesian_control_velocity_angular_;
+    node->declare_parameter<double>(param_namespace + ".max_velocity", rclcpp::PARAMETER_DOUBLE);
+    try {
+      double max_velocity = node->get_parameter(param_namespace + ".max_velocity").as_double();
+      manipulator_cartesian_controls_[cartesian_control_name] = JoyControlFactory(
+        node->get_node_parameters_interface(), node->get_node_logging_interface(), param_namespace,
+        max_velocity);
+    } catch (const rclcpp::exceptions::ParameterUninitializedException & e) {
+      RCLCPP_ERROR_STREAM(node->get_logger(), "Required parameter not defined: " << e.what());
+      throw e;
     }
-
-    manipulator_cartesian_controls_[cartesian_control_name] = JoyControlFactory(
-      node->get_node_parameters_interface(), node->get_node_logging_interface(), param_namespace,
-      scaling);
   }
 }
 

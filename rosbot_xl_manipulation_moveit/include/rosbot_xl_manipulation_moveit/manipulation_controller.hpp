@@ -1,5 +1,8 @@
-#ifndef ROSBOT_XL_MANIPULATION_MOVEIT_MOVEIT_CONTROLLERS_H_
-#define ROSBOT_XL_MANIPULATION_MOVEIT_MOVEIT_CONTROLLERS_H_
+#ifndef ROSBOT_XL_MANIPULATION_MOVEIT_MANIPULATION_CONTROLLER_H_
+#define ROSBOT_XL_MANIPULATION_MOVEIT_MANIPULATION_CONTROLLER_H_
+
+#include <vector>
+#include <map>
 
 #include <rclcpp/rclcpp.hpp>
 
@@ -58,7 +61,6 @@ private:
   std::map<std::string, std::unique_ptr<JoyControl>> manipulator_joint_controls_;
 
   std::vector<std::string> joint_names_;
-  double joint_control_velocity_;
 };
 
 class CartesianController : public ManipulationController
@@ -83,8 +85,6 @@ private:
   std::vector<std::string> cartesian_control_names_;
   std::vector<std::string> cartesian_cmd_names_;
   std::string cartesian_control_reference_frame_;
-  double cartesian_control_velocity_linear_;
-  double cartesian_control_velocity_angular_;
 };
 
 class ManipulatorMoveGroupController : public ManipulationController

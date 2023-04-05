@@ -5,12 +5,6 @@
 
     axis_deadzone: 0.05
 
-    joint_control_velocity: 1.6 # rad/s
-    cartesian_control_velocity_linear: 0.2 # m/s
-    cartesian_control_velocity_angular: 0.8 # rad/s
-
-    cartesian_control_reference_frame: "link2"
-
     dead_man_switch:
       control_type: "single_button"
       button_id: 5
@@ -20,38 +14,47 @@
       button_id: 9
 
     # Cartesian control
+    cartesian_control_reference_frame: "link2"
     cartesian_control_names: ["linear_x", "linear_y", "linear_z", "angular_y"]
     cartesian_drift_dimensions: [false, false, false, false, false, true] # translation x, y, z; rotation x, y, z
     cartesian_control:
       linear_x:
         control_type: "axis"
         axis_id: 1
+        max_velocity: 0.1 # m/s
       linear_y:
         control_type: "axis"
         axis_id: 0
+        max_velocity: 0.2 # m/s
       linear_z:
         control_type: "axis"
         axis_id: 3
+        max_velocity: 0.1 # m/s
       angular_y:
         control_type: "axis"
         axis_id: 2
+        max_velocity: 0.8 # rad/s
 
     joints_control:
       joint1:
         control_type: "axis"
         axis_id: 4
+        max_velocity: 1.6 # rad/s
       joint2:
         control_type: "axis"
         axis_id: 5
         inverted: true
+        max_velocity: 1.6 # rad/s
       joint3:
         control_type: "double_button"
         positive_button_id: 0
         negative_button_id: 2
+        max_velocity: 1.6 # rad/s
       joint4:
         control_type: "double_button"
         positive_button_id: 1
         negative_button_id: 3
+        max_velocity: 1.6 # rad/s
 
     gripper_control:
       # Toggles between opened and closed positions
