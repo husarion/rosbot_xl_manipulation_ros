@@ -13,6 +13,9 @@
       control_type: "single_button"
       button_id: 9
 
+    # max_velocity set to quite low values (for both cartesian and joints control)
+    # so that collistion checker will have enough time to stop manipulator
+
     # Cartesian control
     cartesian_control_reference_frame: "link2"
     cartesian_control_names: ["linear_x", "linear_y", "linear_z", "angular_y"]
@@ -34,27 +37,28 @@
         control_type: "axis"
         axis_id: 2
         max_velocity: 0.8 # rad/s
-
+    
+    # Joints control
     joints_control:
       joint1:
         control_type: "axis"
         axis_id: 4
-        max_velocity: 1.6 # rad/s
+        max_velocity: 0.4 # rad/s
       joint2:
         control_type: "axis"
         axis_id: 5
         inverted: true
-        max_velocity: 1.6 # rad/s
+        max_velocity: 0.4 # rad/s
       joint3:
         control_type: "double_button"
         positive_button_id: 0
         negative_button_id: 2
-        max_velocity: 1.6 # rad/s
+        max_velocity: 0.4 # rad/s
       joint4:
         control_type: "double_button"
         positive_button_id: 1
         negative_button_id: 3
-        max_velocity: 1.6 # rad/s
+        max_velocity: 0.4 # rad/s
 
     gripper_control:
       # Toggles between opened and closed positions
