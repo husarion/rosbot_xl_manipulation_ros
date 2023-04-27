@@ -74,10 +74,16 @@ void JoyServoNode::JoyCb(const sensor_msgs::msg::Joy::SharedPtr msg)
   }
 
   if (!dead_man_switch_->IsPressed(msg)) {
-    StopControllers(manipulator_controllers_);
-    StopControllers(gripper_controllers_);
+    // Send zero only once after releasing dead man switch. Otherwise it can be sent with some frequency
+    // (depending on joy msgs), and in result MoveIt MotionPlanning rviz plugin won't work
+    if (!dead_man_switch_stop_sent_) {
+      dead_man_switch_stop_sent_ = true;
+      StopControllers(manipulator_controllers_);
+      StopControllers(gripper_controllers_);
+    }
     return;
   }
+  dead_man_switch_stop_sent_ = false;
 
   ProcessControllers(msg, manipulator_controllers_);
   ProcessControllers(msg, gripper_controllers_);

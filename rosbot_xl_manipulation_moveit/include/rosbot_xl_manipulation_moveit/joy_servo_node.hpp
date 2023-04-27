@@ -37,6 +37,7 @@ private:
   bool controllers_initialized_ = false;
 
   std::unique_ptr<JoyControl> dead_man_switch_;
+  bool dead_man_switch_stop_sent_ = false;
   
   rclcpp::Subscription<sensor_msgs::msg::Joy>::SharedPtr joy_sub_; 
 };
