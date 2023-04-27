@@ -143,6 +143,7 @@ def generate_launch_description():
             servo_params,
             robot_description,
             moveit_config.robot_description_semantic,
+            moveit_config.joint_limits,
             # if inverse kinamtics isn't specified inverse Jacobian will be used
             # moveit_config.robot_description_kinematics
         ],
