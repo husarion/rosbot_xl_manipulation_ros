@@ -12,6 +12,8 @@
     home_manipulator:
       control_type: "single_button"
       button_id: 9
+    manipulator_move_group_velocity_scaling_factor: 1.0
+    manipulator_move_group_acceleration_scaling_factor: 1.0
 
     # max_velocity set to quite low values (for both cartesian and joints control)
     # so that collistion checker will have enough time to stop manipulator

@@ -180,6 +180,16 @@ ManipulatorMoveGroupController::ManipulatorMoveGroupController(const rclcpp::Nod
   move_group_manipulator_ =
     std::make_unique<moveit::planning_interface::MoveGroupInterface>(node, "manipulator");
   ParseParameters(node);
+
+  node->declare_parameter<double>("manipulator_move_group_velocity_scaling_factor", 0.1);
+  node->declare_parameter<double>("manipulator_move_group_acceleration_scaling_factor", 0.1);
+  double velocity_scaling_factor =
+    node->get_parameter("manipulator_move_group_velocity_scaling_factor").as_double();
+  double acceleration_scaling_factor =
+    node->get_parameter("manipulator_move_group_acceleration_scaling_factor").as_double();
+  // By default move group sets scaling factors to 0.1, which results in slow movement
+  move_group_manipulator_->setMaxVelocityScalingFactor(velocity_scaling_factor);
+  move_group_manipulator_->setMaxAccelerationScalingFactor(acceleration_scaling_factor);
 }
 
 bool ManipulatorMoveGroupController::Process(const sensor_msgs::msg::Joy::SharedPtr msg)
