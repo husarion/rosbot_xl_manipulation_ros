@@ -3,8 +3,7 @@
 namespace rosbot_xl_manipulation
 {
 
-AxisControl::AxisControl(
-  int axis_id, double axis_deadzone, double scaling, bool inverted_control)
+AxisControl::AxisControl(int axis_id, double axis_deadzone, double scaling, bool inverted_control)
 {
   axis_id_ = axis_id;
   axis_deadzone_ = axis_deadzone;
@@ -15,6 +14,7 @@ bool AxisControl::IsPressed(const sensor_msgs::msg::Joy::SharedPtr msg) const
 {
   return std::fabs(msg->axes[axis_id_]) > axis_deadzone_;
 }
+
 double AxisControl::GetControlValue(const sensor_msgs::msg::Joy::SharedPtr msg) const
 {
   return msg->axes[axis_id_] * scaling_;
@@ -32,6 +32,7 @@ bool DoubleButtonControl::IsPressed(const sensor_msgs::msg::Joy::SharedPtr msg) 
 {
   return msg->buttons[positive_button_id_] || msg->buttons[negative_button_id_];
 }
+
 double DoubleButtonControl::GetControlValue(const sensor_msgs::msg::Joy::SharedPtr msg) const
 {
   return (msg->buttons[positive_button_id_] - msg->buttons[negative_button_id_]) * scaling_;
@@ -47,6 +48,7 @@ bool SingleButtonControl::IsPressed(const sensor_msgs::msg::Joy::SharedPtr msg) 
 {
   return msg->buttons[button_id_];
 }
+
 double SingleButtonControl::GetControlValue(const sensor_msgs::msg::Joy::SharedPtr msg) const
 {
   return msg->buttons[button_id_] * scaling_;
