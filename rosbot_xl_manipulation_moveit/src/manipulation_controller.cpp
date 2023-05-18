@@ -45,7 +45,7 @@ bool JointController::Process(const sensor_msgs::msg::Joy::SharedPtr msg)
 {
   if (CheckIfPressed(msg, manipulator_joint_controls_)) {
     std::vector<double> cmds = CalculateCommand(msg, joint_names_, manipulator_joint_controls_);
-    SendJointCommand(cmds, msg->header.stamp);
+    SendJointCommand(cmds, clock_itf_->get_clock()->now());
     return true;
   }
   return false;
@@ -109,7 +109,7 @@ bool CartesianController::Process(const sensor_msgs::msg::Joy::SharedPtr msg)
   if (CheckIfPressed(msg, manipulator_cartesian_controls_)) {
     std::vector<double> cmds =
       CalculateCommand(msg, cartesian_cmd_names_, manipulator_cartesian_controls_);
-    SendCartesianCommand(cmds, msg->header.stamp);
+    SendCartesianCommand(cmds, clock_itf_->get_clock()->now());
     return true;
   }
   return false;
