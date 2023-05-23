@@ -123,12 +123,11 @@ void CartesianController::Stop()
 
 void CartesianController::ParseParameters(const rclcpp::Node::SharedPtr & node)
 {
-  node->declare_parameter<std::string>("cartesian_control_reference_frame", "link2");
-  cartesian_control_reference_frame_ =
-    node->get_parameter("cartesian_control_reference_frame").as_string();
-
+  node->declare_parameter("cartesian_control_reference_frame", rclcpp::PARAMETER_STRING);
   node->declare_parameter("cartesian_control_names", rclcpp::PARAMETER_STRING_ARRAY);
   try {
+    cartesian_control_reference_frame_ =
+      node->get_parameter("cartesian_control_reference_frame").as_string();
     cartesian_control_names_ = node->get_parameter("cartesian_control_names").as_string_array();
   } catch (const rclcpp::exceptions::ParameterUninitializedException & e) {
     RCLCPP_ERROR_STREAM(node->get_logger(), "Required parameter not defined: " << e.what());
