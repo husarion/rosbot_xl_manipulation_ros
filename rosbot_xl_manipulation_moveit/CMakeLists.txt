@@ -8,7 +8,6 @@ set(PACKAGE_INCLUDE_DEPENDS
   rclcpp_components
   sensor_msgs
   moveit_core
-
   moveit_msgs
   moveit_ros_planning
   moveit_ros_planning_interface
@@ -35,7 +34,6 @@ rclcpp_components_register_node(joy_servo
   PLUGIN "rosbot_xl_manipulation::JoyServoNode"
   EXECUTABLE joy_servo_node
 )
-
 
 install(DIRECTORY launch DESTINATION share/${PROJECT_NAME}
   PATTERN "setup_assistant.launch" EXCLUDE)
