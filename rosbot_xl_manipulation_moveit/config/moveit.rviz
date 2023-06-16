@@ -9,9 +9,8 @@ Panels:
         - /MotionPlanning1/Planning Request1
         - /MotionPlanning1/Planning Metrics1
         - /MotionPlanning1/Planned Path1
-        - /TF1
       Splitter Ratio: 0.5
-    Tree Height: 527
+    Tree Height: 985
   - Class: rviz_common/Help
     Name: Help
   - Class: rviz_common/Views
@@ -40,7 +39,7 @@ Visualization Manager:
       Plane Cell Count: 10
       Reference Frame: <Fixed Frame>
       Value: true
-    - Acceleration_Scaling_Factor: 0.1
+    - Acceleration_Scaling_Factor: 1
       Class: moveit_rviz_plugin/MotionPlanning
       Enabled: true
       Move Group Namespace: ""
@@ -71,6 +70,16 @@ Visualization Manager:
           Expand Link Details: false
           Expand Tree: false
           Link Tree Style: Links in Alphabetic Order
+          antenna_connector_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          antenna_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
           base_link:
             Alpha: 1
             Show Axes: false
@@ -146,12 +155,12 @@ Visualization Manager:
             Show Axes: false
             Show Trail: false
             Value: true
-          slamtec_rplidar_s1_link:
+          rr_wheel_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          rr_wheel_link:
+          slamtec_rplidar_s1_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
@@ -177,7 +186,7 @@ Visualization Manager:
         Colliding Link Color: 255; 0; 0
         Goal State Alpha: 1
         Goal State Color: 250; 128; 0
-        Interactive Marker Size: 0
+        Interactive Marker Size: 0.10000000149011612
         Joint Violation Color: 255; 0; 255
         Planning Group: manipulator
         Query Goal State: true
@@ -202,6 +211,16 @@ Visualization Manager:
           Expand Link Details: false
           Expand Tree: false
           Link Tree Style: Links in Alphabetic Order
+          antenna_connector_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          antenna_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
           base_link:
             Alpha: 1
             Show Axes: false
@@ -277,12 +296,12 @@ Visualization Manager:
             Show Axes: false
             Show Trail: false
             Value: true
-          slamtec_rplidar_s1_link:
+          rr_wheel_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          rr_wheel_link:
+          slamtec_rplidar_s1_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
@@ -291,86 +310,47 @@ Visualization Manager:
         Show Robot Collision: false
         Show Robot Visual: true
       Value: true
-      Velocity_Scaling_Factor: 0.1
+      Velocity_Scaling_Factor: 1
     - Class: rviz_default_plugins/TF
-      Enabled: true
+      Enabled: false
       Frame Timeout: 15
       Frames:
         All Enabled: true
-        base_link:
-          Value: true
-        body_link:
-          Value: true
-        cover_link:
-          Value: true
-        end_effector_link:
-          Value: true
-        fl_wheel_link:
-          Value: true
-        fr_wheel_link:
-          Value: true
-        gripper_left_link:
-          Value: true
-        gripper_right_link:
-          Value: true
-        imu_link:
-          Value: true
-        laser:
-          Value: true
-        link1:
-          Value: true
-        link2:
-          Value: true
-        link3:
-          Value: true
-        link4:
-          Value: true
-        link5:
-          Value: true
-        odom:
-          Value: true
-        rl_wheel_link:
-          Value: true
-        slamtec_rplidar_s1_link:
-          Value: true
-        rr_wheel_link:
-          Value: true
       Marker Scale: 0.20000000298023224
       Name: TF
       Show Arrows: true
       Show Axes: true
       Show Names: true
       Tree:
-        odom:
-          base_link:
-            body_link:
-              cover_link:
-                link1:
-                  link2:
-                    link3:
-                      link4:
-                        link5:
-                          end_effector_link:
-                            {}
-                          gripper_left_link:
-                            {}
-                          gripper_right_link:
-                            {}
-                slamtec_rplidar_s1_link:
-                  laser:
-                    {}
-              fl_wheel_link:
-                {}
-              fr_wheel_link:
-                {}
-              imu_link:
-                {}
-              rl_wheel_link:
-                {}
-              rr_wheel_link:
-                {}
+        {}
       Update Interval: 0
-      Value: true
+      Value: false
+    - Alpha: 1
+      Class: rviz_default_plugins/RobotModel
+      Collision Enabled: false
+      Description File: ""
+      Description Source: Topic
+      Description Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /robot_description
+      Enabled: false
+      Links:
+        All Links Enabled: true
+        Expand Joint Details: false
+        Expand Link Details: false
+        Expand Tree: false
+        Link Tree Style: Links in Alphabetic Order
+      Mass Properties:
+        Inertia: false
+        Mass: false
+      Name: RobotModel
+      TF Prefix: ""
+      Update Interval: 0
+      Value: false
+      Visual Enabled: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -389,30 +369,30 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 0.9875593781471252
+      Distance: 0.8769853711128235
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -0.2069578915834427
-        Y: 0.0667857900261879
-        Z: 0.12576982378959656
+        X: -0.0494825653731823
+        Y: -0.002634616568684578
+        Z: 0.16523724794387817
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.7249994277954102
+      Pitch: 0.3449995517730713
       Target Frame: base_link
       Value: Orbit (rviz_default_plugins)
-      Yaw: 2.3701987266540527
+      Yaw: 0.9052113890647888
     Saved: ~
 Window Geometry:
   Displays:
     collapsed: false
-  Height: 1053
+  Height: 2089
   Help:
     collapsed: false
   Hide Left Dock: false
@@ -421,9 +401,9 @@ Window Geometry:
     collapsed: false
   MotionPlanning - Trajectory Slider:
     collapsed: false
-  QMainWindow State: 000000ff00000000fd0000000100000000000002b4000003c7fc0200000005fb00000044004d006f00740069006f006e0050006c0061006e006e0069006e00670020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000003f00fffffffb000000100044006900730070006c006100790073010000003b0000024a000000c700fffffffb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e0067010000028b000001770000016900fffffffb0000000800480065006c0070000000029a0000006e0000006e00fffffffb0000000a00560069006500770073000000032d000000c8000000a000ffffff000004c6000003c700000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd00000001000000000000022d000007c7fc0200000005fb00000044004d006f00740069006f006e0050006c0061006e006e0069006e00670020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000004700fffffffb000000100044006900730070006c00610079007301000000440000041a000000eb00fffffffb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e00670100000465000003a6000001a100fffffffb0000000800480065006c0070000000029a0000006e0000008100fffffffb0000000a00560069006500770073000000032d000000c8000000b900ffffff00000ccc000007c700000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Views:
     collapsed: false
-  Width: 1920
-  X: 0
-  Y: 27
+  Width: 3840
+  X: 1920
+  Y: 34
