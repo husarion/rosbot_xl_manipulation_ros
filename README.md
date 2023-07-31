@@ -83,6 +83,7 @@ colcon build
 
 Running:
 ```
+source install/setup.bash
 ros2 launch rosbot_xl_manipulation_bringup bringup.launch.py
 ```
 
@@ -107,6 +108,7 @@ colcon build
 
 Running:
 ```
+source install/setup.bash
 ros2 launch rosbot_xl_manipulation_gazebo simulation.launch.py
 ```
 
