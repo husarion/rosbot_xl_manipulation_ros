@@ -28,3 +28,7 @@ Launch files for Ignition Gazebo working with ROS2 control.
 ### `rosbot_xl_manipulation_moveit`
 
 Configs for launching MoveIt2 with OpenManipulatorX. Also includes servo config and node that translates joy commands to servo commands.
+
+## ROS API
+
+Available in [ROS_API.md](./ROS_API.md)
