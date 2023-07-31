@@ -32,3 +32,76 @@ Configs for launching MoveIt2 with OpenManipulatorX. Also includes servo config 
 ## ROS API
 
 Available in [ROS_API.md](./ROS_API.md)
+
+## Source build
+
+### Prerequisites
+
+Install `colcon`, `vsc` and `rosdep`:
+```
+sudo apt-get update
+sudo apt-get install -y python3-colcon-common-extensions python3-vcstool python3-rosdep
+```
+
+Create workspace folder and clone `rosbot_xl_ros` repository:
+```
+mkdir -p ros2_ws/src
+cd ros2_ws
+git clone https://github.com/husarion/rosbot_xl_manipulation_ros.git src/
+```
+
+### Build and run on hardware
+
+Building:
+```
+export HUSARION_ROS_BUILD=hardware
+
+source /opt/ros/$ROS_DISTRO/setup.bash
+
+vcs import src < src/rosbot_xl_manipulation_ros/rosbot_xl_manipulation/rosbot_xl_manipulation.repos
+vcs import src < src/rosbot_xl_ros/rosbot_xl/rosbot_xl_hardware.repos
+vcs import src < src/open_manipulator_x/open_manipulator_x.repos
+
+rm -r src/rosbot_xl_gazebo
+rm -r src/rosbot_xl_manipulation_ros/rosbot_xl_manipulation_gazebo
+
+rosdep init
+rosdep update --rosdistro $ROS_DISTRO
+rosdep install -i --from-path src --rosdistro $ROS_DISTRO -y
+colcon build
+```
+
+Running:
+```
+ros2 launch rosbot_xl_manipulation_bringup bringup.launch.py
+```
+
+### Build and run Gazebo simulation
+
+Building:
+```
+export HUSARION_ROS_BUILD=simulation
+
+source /opt/ros/$ROS_DISTRO/setup.bash
+
+vcs import src < src/rosbot_xl_manipulation_ros/rosbot_xl_manipulation/rosbot_xl_manipulation.repos
+vcs import src < src/rosbot_xl_ros/rosbot_xl/rosbot_xl_hardware.repos
+vcs import src < src/rosbot_xl_ros/rosbot_xl/rosbot_xl_simulation.repos
+vcs import src < src/open_manipulator_x/open_manipulator_x.repos
+
+rosdep init
+rosdep update --rosdistro $ROS_DISTRO
+rosdep install -i --from-path src --rosdistro $ROS_DISTRO -y
+colcon build
+```
+
+Running:
+```
+ros2 launch rosbot_xl_manipulation_gazebo simulation.launch.py
+```
+
+## Demos
+
+For further usage examples check out our other repositories:
+* [`rosbot-xl-docker`](https://github.com/husarion/rosbot-xl-docker) - Dockerfiles for building hardware and simulation images
+* [`rosbot-xl-manipulation`](https://github.com/husarion/rosbot-xl-manipulation) - integration of ROSbot XL with OpenManipulatorX
