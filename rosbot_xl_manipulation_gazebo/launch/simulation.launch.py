@@ -67,7 +67,7 @@ def generate_launch_description():
         description="Whether to use mecanum drive controller (otherwise diff drive controller is used)",
     )
 
-    map_package = get_package_share_directory("husarion_office_gz")
+    map_package = get_package_share_directory("husarion_gz_worlds")
     world_file = PathJoinSubstitution([map_package, "worlds", "husarion_world.sdf"])
     world_cfg = LaunchConfiguration("world")
     declare_world_arg = DeclareLaunchArgument(
