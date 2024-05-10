@@ -46,7 +46,7 @@ For detailed instructions refer to the [rosbot_xl_firmware repository](https://g
 Install `colcon`, `vsc` and `rosdep`:
 ```
 sudo apt-get update
-sudo apt-get install -y python3-colcon-common-extensions python3-vcstool python3-rosdep
+sudo apt-get install -y ros-dev-tools
 ```
 
 Create workspace folder and clone `rosbot_xl_ros` repository:
@@ -68,7 +68,7 @@ vcs import src < src/rosbot_xl_manipulation_ros/rosbot_xl_manipulation/rosbot_xl
 vcs import src < src/rosbot_xl_ros/rosbot_xl/rosbot_xl_hardware.repos
 vcs import src < src/open_manipulator_x/open_manipulator_x.repos
 
-rm -r src/rosbot_xl_gazebo
+rm -r src/rosbot_xl_ros/rosbot_xl_gazebo
 rm -r src/rosbot_xl_manipulation_ros/rosbot_xl_manipulation_gazebo
 
 rosdep init

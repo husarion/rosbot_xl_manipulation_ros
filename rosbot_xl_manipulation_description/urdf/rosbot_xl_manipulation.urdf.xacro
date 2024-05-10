@@ -8,25 +8,25 @@
   <xacro:arg name="manipulator_collision_enabled" default="true" />
   <xacro:arg name="joint1_limit_min" default="-2.356" />
   <xacro:arg name="joint1_limit_max" default="5.934" />
-  <xacro:arg name="antenna_rotation_angle" default="0.0" />
   <xacro:arg name="mecanum" default="false" />
   <xacro:arg name="use_sim" default="false" />
   <xacro:arg name="simulation_engine" default="ignition-gazebo" />
-  <xacro:arg name="simulation_controllers_config_file"
-    default="$(find rosbot_xl_manipulation_controller)/config/diff_drive_controller_manipulation.yaml" />
+  <xacro:arg name="namespace" default="None" />
 
   <xacro:include filename="$(find rosbot_xl_description)/urdf/rosbot_xl_macro.urdf.xacro"
     ns="husarion" />
-  <xacro:husarion.rosbot_xl_robot use_sim="$(arg use_sim)" mecanum="$(arg mecanum)"
+  <xacro:husarion.rosbot_xl_robot
+    use_sim="$(arg use_sim)"
+    mecanum="$(arg mecanum)"
     simulation_engine="$(arg simulation_engine)"
-    simulation_controllers_config_file="$(arg simulation_controllers_config_file)" />
+    namespace="$(arg namespace)" />
 
   <xacro:include filename="$(find rosbot_xl_description)/urdf/components/antenna.urdf.xacro"
     ns="antenna" />
   <xacro:antenna.antenna
     parent_link="body_link"
     xyz="-0.155 -0.055 0.065"
-    rpy="$(arg antenna_rotation_angle) 0.0 0.0"
+    rpy="0.0 0.0 0.0"
     antenna_angle="0.0" />
 
     <xacro:include filename="$(find ros_components_description)/urdf/slamtec_rplidar_s1.urdf.xacro"
