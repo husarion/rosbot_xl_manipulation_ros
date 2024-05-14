@@ -59,6 +59,7 @@ def generate_launch_description():
         default_value="-2.356",
         description="Min angle (in radians) that can be achieved by rotating joint1 of the manipulator",
     )
+
     joint1_limit_max = LaunchConfiguration("joint1_limit_max")
     declare_joint1_limit_max_arg = DeclareLaunchArgument(
         "joint1_limit_max",

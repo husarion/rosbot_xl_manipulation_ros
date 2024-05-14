@@ -1,25 +1,3 @@
-simulation_ignition_ros_control:
-  ros__parameters:
-    use_sim_time: true
-
-# Separate controller manager used for simulation - only difference is 
-# the use_sim_time parameter (it is the easiest way to do it with ign ros2 control) 
-simulation_controller_manager:
-  ros__parameters:
-    use_sim_time: true
-    update_rate: 25 # Hz
-
-    joint_state_broadcaster:
-      type: joint_state_broadcaster/JointStateBroadcaster
-    rosbot_xl_base_controller:
-      type: mecanum_drive_controller/MecanumDriveController
-    imu_broadcaster:
-      type: imu_sensor_broadcaster/IMUSensorBroadcaster
-    manipulator_controller:
-      type: joint_trajectory_controller/JointTrajectoryController
-    gripper_controller:
-      type: position_controllers/GripperActionController
-
 controller_manager:
   ros__parameters:
     use_sim_time: false
@@ -43,7 +21,6 @@ manipulator_controller:
       - joint2
       - joint3
       - joint4
-    interface_name: position
 
     command_interfaces:
       - position

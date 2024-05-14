@@ -181,9 +181,9 @@ def generate_launch_description():
 
     controller_config_name = PythonExpression(
         [
-            "'mecanum_drive_controller.yaml' if ",
+            "'mecanum_drive_controller_manipulation.yaml' if ",
             mecanum,
-            " else 'diff_drive_controller.yaml'",
+            " else 'diff_drive_controller_manipulation.yaml'",
         ]
     )
 
@@ -220,7 +220,7 @@ def generate_launch_description():
 
     robot_controllers = PathJoinSubstitution(
         [
-            FindPackageShare("rosbot_xl_controller"),
+            FindPackageShare("rosbot_xl_manipulation_controller"),
             "config",
             controller_config_name,
         ]
