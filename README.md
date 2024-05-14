@@ -46,7 +46,7 @@ For detailed instructions refer to the [rosbot_xl_firmware repository](https://g
 Install `colcon`, `vsc` and `rosdep`:
 ```
 sudo apt-get update
-sudo apt-get install -y ros-dev-tools
+sudo apt-get install -y ros-dev-tools python3-pip
 ```
 
 Create workspace folder and clone `rosbot_xl_ros` repository:
@@ -99,6 +99,8 @@ vcs import src < src/rosbot_xl_manipulation_ros/rosbot_xl_manipulation/rosbot_xl
 vcs import src < src/rosbot_xl_ros/rosbot_xl/rosbot_xl_hardware.repos
 vcs import src < src/rosbot_xl_ros/rosbot_xl/rosbot_xl_simulation.repos
 vcs import src < src/open_manipulator_x/open_manipulator_x.repos
+
+cp -r src/ros2_controllers/imu_sensor_broadcaster src && rm -rf src/ros2_controllers
 
 rosdep init
 rosdep update --rosdistro $ROS_DISTRO

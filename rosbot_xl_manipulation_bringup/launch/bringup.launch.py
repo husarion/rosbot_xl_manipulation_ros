@@ -24,13 +24,13 @@ def generate_launch_description():
     manipulator_usb_port = LaunchConfiguration("manipulator_usb_port")
     declare_manipulator_usb_port_arg = DeclareLaunchArgument(
         "manipulator_usb_port",
-        default_value="/dev/ttyUSB0",
+        default_value="/dev/ttyMANIPULATOR",
     )
 
     manipulator_baud_rate = LaunchConfiguration("manipulator_baud_rate")
     declare_manipulator_baud_rate_arg = DeclareLaunchArgument(
         "manipulator_baud_rate",
-        default_value="115200",
+        default_value="1000000",
     )
 
     joy_servo_config = LaunchConfiguration("joy_servo_params_file")

@@ -38,14 +38,22 @@
     <!--VIRTUAL JOINT: Purpose: this element defines a virtual joint between a robot link and an external frame of reference (considered fixed with respect to the robot)-->
     <virtual_joint name="virtual_joint" type="fixed" parent_frame="world" child_link="base_link"/>
     <!--DISABLE COLLISIONS: By default it is assumed that any link of the robot could potentially come into collision with any other link in the robot. This tag disables collision checking between a specified pair of links. -->
-    <disable_collisions link1="antenna_link" link2="body_link" reason="Adjacent"/>
-    <disable_collisions link1="antenna_link" link2="fl_wheel_link" reason="Never"/>
-    <disable_collisions link1="antenna_link" link2="fr_wheel_link" reason="Never"/>
-    <disable_collisions link1="antenna_link" link2="link1" reason="Never"/>
-    <disable_collisions link1="antenna_link" link2="link2" reason="Never"/>
-    <disable_collisions link1="antenna_link" link2="rl_wheel_link" reason="Never"/>
-    <disable_collisions link1="antenna_link" link2="rr_wheel_link" reason="Never"/>
-    <disable_collisions link1="antenna_link" link2="slamtec_rplidar_s1_link" reason="Never"/>
+    <disable_collisions link1="left_antenna_link" link2="body_link" reason="Adjacent"/>
+    <disable_collisions link1="left_antenna_link" link2="fl_wheel_link" reason="Never"/>
+    <disable_collisions link1="left_antenna_link" link2="fr_wheel_link" reason="Never"/>
+    <disable_collisions link1="left_antenna_link" link2="link1" reason="Never"/>
+    <disable_collisions link1="left_antenna_link" link2="link2" reason="Never"/>
+    <disable_collisions link1="left_antenna_link" link2="rl_wheel_link" reason="Never"/>
+    <disable_collisions link1="left_antenna_link" link2="rr_wheel_link" reason="Never"/>
+    <disable_collisions link1="left_antenna_link" link2="slamtec_rplidar_s1_link" reason="Never"/>
+    <disable_collisions link1="right_antenna_link" link2="body_link" reason="Adjacent"/>
+    <disable_collisions link1="right_antenna_link" link2="fl_wheel_link" reason="Never"/>
+    <disable_collisions link1="right_antenna_link" link2="fr_wheel_link" reason="Never"/>
+    <disable_collisions link1="right_antenna_link" link2="link1" reason="Never"/>
+    <disable_collisions link1="right_antenna_link" link2="link2" reason="Never"/>
+    <disable_collisions link1="right_antenna_link" link2="rl_wheel_link" reason="Never"/>
+    <disable_collisions link1="right_antenna_link" link2="rr_wheel_link" reason="Never"/>
+    <disable_collisions link1="right_antenna_link" link2="slamtec_rplidar_s1_link" reason="Never"/>
     <disable_collisions link1="body_link" link2="fl_wheel_link" reason="Adjacent"/>
     <disable_collisions link1="body_link" link2="fr_wheel_link" reason="Adjacent"/>
     <disable_collisions link1="body_link" link2="link1" reason="Adjacent"/>
