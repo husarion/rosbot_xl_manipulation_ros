@@ -53,7 +53,7 @@ Create workspace folder and clone `rosbot_xl_ros` repository:
 ```
 mkdir -p ros2_ws/src
 cd ros2_ws
-git clone https://github.com/husarion/rosbot_xl_manipulation_ros.git src/
+git clone https://github.com/husarion/rosbot_xl_manipulation_ros.git src/rosbot_xl_manipulation_ros
 ```
 
 ### Build and run on hardware
@@ -70,11 +70,14 @@ vcs import src < src/open_manipulator_x/open_manipulator_x.repos
 
 rm -r src/rosbot_xl_ros/rosbot_xl_gazebo
 rm -r src/rosbot_xl_manipulation_ros/rosbot_xl_manipulation_gazebo
+cp -r src/ros2_controllers/diff_drive_controller src
+cp -r src/ros2_controllers/imu_sensor_broadcaster src
+rm -rf src/ros2_controllers
 
 rosdep init
 rosdep update --rosdistro $ROS_DISTRO
 rosdep install -i --from-path src --rosdistro $ROS_DISTRO -y
-colcon build
+colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release
 ```
 
 > **Prerequisites**
@@ -100,12 +103,14 @@ vcs import src < src/rosbot_xl_ros/rosbot_xl/rosbot_xl_hardware.repos
 vcs import src < src/rosbot_xl_ros/rosbot_xl/rosbot_xl_simulation.repos
 vcs import src < src/open_manipulator_x/open_manipulator_x.repos
 
-cp -r src/ros2_controllers/imu_sensor_broadcaster src && rm -rf src/ros2_controllers
+cp -r src/ros2_controllers/diff_drive_controller src
+cp -r src/ros2_controllers/imu_sensor_broadcaster src
+rm -rf src/ros2_controllers
 
 rosdep init
 rosdep update --rosdistro $ROS_DISTRO
 rosdep install -i --from-path src --rosdistro $ROS_DISTRO -y
-colcon build
+colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release
 ```
 
 Running:
