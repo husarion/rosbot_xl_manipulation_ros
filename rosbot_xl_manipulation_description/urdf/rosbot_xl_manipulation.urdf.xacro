@@ -25,16 +25,9 @@
     ns="antenna" />
   <xacro:antenna.antenna
     parent_link="body_link"
-    xyz="-0.155 0.055 0.065"
-    rpy="0.0 0.0 0.0"
-    antenna_angle="1.57"
-    tf_prefix="left" />
-  <xacro:antenna.antenna
-    parent_link="body_link"
     xyz="-0.155 -0.055 0.065"
-    rpy="0.0 0.0 0.0"
-    antenna_angle="-1.57"
-    tf_prefix="right" />
+    rpy="-1.57 0.0 0.0"
+    antenna_angle="0.0" />
 
     <xacro:include filename="$(find ros_components_description)/urdf/slamtec_rplidar_s1.urdf.xacro"
     ns="lidar" />

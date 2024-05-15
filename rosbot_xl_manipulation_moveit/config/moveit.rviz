@@ -75,12 +75,7 @@ Visualization Manager:
             Show Axes: false
             Show Trail: false
             Value: true
-          left_antenna_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          right_antenna_link:
+          antenna_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
@@ -221,12 +216,7 @@ Visualization Manager:
             Show Axes: false
             Show Trail: false
             Value: true
-          left_antenna_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          right_antenna_link:
+          antenna_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
