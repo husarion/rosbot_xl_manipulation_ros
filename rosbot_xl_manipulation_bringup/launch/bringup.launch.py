@@ -2,9 +2,11 @@
 
 from launch import LaunchDescription
 from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument
+from launch.conditions import UnlessCondition
 from launch.substitutions import (
     PathJoinSubstitution,
     LaunchConfiguration,
+    ThisLaunchFileDir,
 )
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 
@@ -168,6 +170,11 @@ def generate_launch_description():
             )
         ],
     )
+    
+    microros_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([ThisLaunchFileDir(), "/microros.launch.py"]),
+        condition=UnlessCondition(use_sim)
+    )
 
     actions = [
         declare_joy_servo_config_arg,
@@ -180,6 +187,7 @@ def generate_launch_description():
         declare_mecanum_arg,
         declare_use_sim_arg,
         SetParameter(name="use_sim_time", value=use_sim),
+        microros_launch,
         controller_launch,
         moveit_launch,
         servo_launch,
