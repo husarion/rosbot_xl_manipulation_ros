@@ -80,28 +80,6 @@ def generate_launch_description():
         launch_arguments={"gz_args": world_cfg}.items(),
     )
 
-    robot_description_content = Command(
-        [
-            PathJoinSubstitution([FindExecutable(name="xacro")]),
-            " ",
-            PathJoinSubstitution(
-                [
-                    FindPackageShare("rosbot_xl_manipulation_description"),
-                    "urdf",
-                    "rosbot_xl_manipulation.urdf.xacro",
-                ]
-            ),
-            " manipulator_collision_enabled:=False",
-            " joint1_limit_min:=",
-            joint1_limit_min,
-            " joint1_limit_max:=",
-            joint1_limit_max,
-            " mecanum:=",
-            mecanum,
-            " use_sim:=True",
-        ]
-    )
-
     gz_spawn_entity = Node(
         package="ros_gz_sim",
         executable="create",
@@ -110,8 +88,8 @@ def generate_launch_description():
             "rosbot_xl_manipulation",
             "-allow_renaming",
             "true",
-            "-string",
-            robot_description_content,
+            "-topic",
+            "robot_description",
             "-x",
             "0",
             "-y",

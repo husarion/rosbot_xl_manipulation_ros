@@ -189,7 +189,7 @@ def generate_launch_description():
 
     controller_config_path = PathJoinSubstitution(
         [
-            FindPackageShare("rosbot_xl_controller"),
+            FindPackageShare("rosbot_xl_manipulation_controller"),
             "config",
             controller_config_name,
         ]
