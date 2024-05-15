@@ -1,6 +1,7 @@
 <?xml version='1.0'?>
 <robot name="rosbot_xl" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
+  <xacro:arg name="controller_config_file" default="$(find rosbot_xl_manipulation_controller)/config/diff_drive_controller_manipulation.yaml" />
   <xacro:arg name="manipulator_usb_port" default="/dev/ttyUSB0" />
   <xacro:arg name="manipulator_baud_rate" default="1000000" />
   <!-- collision_enabled parameter added due to collisions using visual meshes, which are very
@@ -16,10 +17,11 @@
   <xacro:include filename="$(find rosbot_xl_description)/urdf/rosbot_xl_macro.urdf.xacro"
     ns="husarion" />
   <xacro:husarion.rosbot_xl_robot
-    use_sim="$(arg use_sim)"
+    controller_config_file="$(arg controller_config_file)"
     mecanum="$(arg mecanum)"
+    namespace="$(arg namespace)"
     simulation_engine="$(arg simulation_engine)"
-    namespace="$(arg namespace)" />
+    use_sim="$(arg use_sim)" />
 
   <xacro:include filename="$(find rosbot_xl_description)/urdf/components/antenna.urdf.xacro"
     ns="antenna" />

@@ -187,6 +187,14 @@ def generate_launch_description():
         ]
     )
 
+    controller_config_path = PathJoinSubstitution(
+        [
+            FindPackageShare("rosbot_xl_controller"),
+            "config",
+            controller_config_name,
+        ]
+    )
+
     # Get URDF via xacro
     robot_description_content = Command(
         [
@@ -199,6 +207,8 @@ def generate_launch_description():
                     "rosbot_xl_manipulation.urdf.xacro",
                 ]
             ),
+            " controller_config_file:=",
+            controller_config_path,
             " manipulator_usb_port:=",
             manipulator_usb_port,
             " manipulator_baud_rate:=",
@@ -218,20 +228,12 @@ def generate_launch_description():
     )
     robot_description = {"robot_description": robot_description_content}
 
-    robot_controllers = PathJoinSubstitution(
-        [
-            FindPackageShare("rosbot_xl_manipulation_controller"),
-            "config",
-            controller_config_name,
-        ]
-    )
-
     control_node = Node(
         package="controller_manager",
         executable="ros2_control_node",
         parameters=[
             robot_description,
-            robot_controllers,
+            controller_config_path,
         ],
         remappings=[
             ("imu_sensor_node/imu", "/_imu/data_raw"),
