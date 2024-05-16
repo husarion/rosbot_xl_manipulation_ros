@@ -84,9 +84,10 @@ rosdep install -i --from-path src --rosdistro $ROS_DISTRO -y
 colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release
 ```
 
-> **Prerequisites**
+> [!IMPORTANT]
+> Before starting the software on the robot please create udev rules:
 >
-> Before starting the software on the robot please make sure that you're using the latest firmware and run the `micro-ROS` agent (as described in the *Usage on hardware* step).
+> `echo 'ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6014", SYMLINK+="ttyMANIPULATOR"' | sudo tee /etc/udev/rules.d/10-local.rules`
 
 Running:
 
