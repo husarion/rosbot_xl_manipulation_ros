@@ -52,13 +52,6 @@ def generate_launch_description():
         default_value="5.934",
         description="Max angle (in radians) that can be achieved by rotating joint1 of the manipulator",
     )
-    
-    antenna_rotation_angle = LaunchConfiguration("antenna_rotation_angle")
-    declare_antenna_rotation_angle_arg = DeclareLaunchArgument(
-        "antenna_rotation_angle",
-        default_value="0.0",
-        description="Angle (in radians) of the antenna. 0 angle means that antenna is in the default upward orientation",
-    )
 
     mecanum = LaunchConfiguration("mecanum")
     declare_mecanum_arg = DeclareLaunchArgument(
@@ -87,48 +80,6 @@ def generate_launch_description():
         launch_arguments={"gz_args": world_cfg}.items(),
     )
 
-    controller_config_name = PythonExpression(
-        [
-            "'mecanum_drive_controller_manipulation.yaml' if ",
-            mecanum,
-            " else 'diff_drive_controller_manipulation.yaml'",
-        ]
-    )
-
-    robot_controllers = PathJoinSubstitution(
-        [
-            FindPackageShare("rosbot_xl_manipulation_controller"),
-            "config",
-            controller_config_name,
-        ]
-    )
-
-    robot_description_content = Command(
-        [
-            PathJoinSubstitution([FindExecutable(name="xacro")]),
-            " ",
-            PathJoinSubstitution(
-                [
-                    FindPackageShare("rosbot_xl_manipulation_description"),
-                    "urdf",
-                    "rosbot_xl_manipulation.urdf.xacro",
-                ]
-            ),
-            " manipulator_collision_enabled:=False",
-            " joint1_limit_min:=",
-            joint1_limit_min,
-            " joint1_limit_max:=",
-            joint1_limit_max,
-            " antenna_rotation_angle:=",
-            antenna_rotation_angle,
-            " mecanum:=",
-            mecanum,
-            " use_sim:=True",
-            " simulation_controllers_config_file:=",
-            robot_controllers,
-        ]
-    )
-
     gz_spawn_entity = Node(
         package="ros_gz_sim",
         executable="create",
@@ -137,8 +88,8 @@ def generate_launch_description():
             "rosbot_xl_manipulation",
             "-allow_renaming",
             "true",
-            "-string",
-            robot_description_content,
+            "-topic",
+            "robot_description",
             "-x",
             "0",
             "-y",
@@ -174,7 +125,6 @@ def generate_launch_description():
             "joy_servo_config": joy_servo_config,
             "joint1_limit_min": joint1_limit_min,
             "joint1_limit_max": joint1_limit_max,
-            "antenna_rotation_angle": antenna_rotation_angle,
             "mecanum": mecanum,
             "use_sim": "True",
         }.items(),
@@ -199,7 +149,6 @@ def generate_launch_description():
             declare_joy_servo_config_arg,
             declare_joint1_limit_min_arg,
             declare_joint1_limit_max_arg,
-            declare_antenna_rotation_angle_arg,
             declare_mecanum_arg,
             declare_world_arg,
             # Sets use_sim_time for all nodes started below (doesn't work for nodes started from ignition gazebo)

@@ -59,18 +59,12 @@ def generate_launch_description():
         default_value="-2.356",
         description="Min angle (in radians) that can be achieved by rotating joint1 of the manipulator",
     )
+
     joint1_limit_max = LaunchConfiguration("joint1_limit_max")
     declare_joint1_limit_max_arg = DeclareLaunchArgument(
         "joint1_limit_max",
         default_value="5.934",
         description="Max angle (in radians) that can be achieved by rotating joint1 of the manipulator",
-    )
-
-    antenna_rotation_angle = LaunchConfiguration("antenna_rotation_angle")
-    declare_antenna_rotation_angle_arg = DeclareLaunchArgument(
-        "antenna_rotation_angle",
-        default_value="0.0",
-        description="Angle (in radians) of the antenna. 0 angle means that antenna is in the default upward orientation",
     )
 
     mecanum = LaunchConfiguration("mecanum")
@@ -126,8 +120,6 @@ def generate_launch_description():
             joint1_limit_min,
             " joint1_limit_max:=",
             joint1_limit_max,
-            " antenna_rotation_angle:=",
-            antenna_rotation_angle,
             " mecanum:=",
             mecanum,
             " use_sim:=",
@@ -169,7 +161,6 @@ def generate_launch_description():
         declare_servo_joy_arg,
         declare_joint1_limit_min_arg,
         declare_joint1_limit_max_arg,
-        declare_antenna_rotation_angle_arg,
         declare_mecanum_arg,
         declare_use_sim_arg,
         SetParameter(name="use_sim_time", value=use_sim),
