@@ -2,6 +2,9 @@
 Changelog for package rosbot_xl_manipulation_controller
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.1.1 (2024-05-08)
 ------------------
 
