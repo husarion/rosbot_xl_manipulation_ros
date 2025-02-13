@@ -19,7 +19,7 @@
   <build_depend>xacro</build_depend>
   <exec_depend>xacro</exec_depend>
   
-  <exec_depend>rosbot_xl_description</exec_depend>
+  <exec_depend>rosbot_description</exec_depend>
   <exec_depend>open_manipulator_x_description</exec_depend>
   <exec_depend>ros_components_description</exec_depend>
 
