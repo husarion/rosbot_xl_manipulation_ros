@@ -69,7 +69,7 @@ export HUSARION_ROS_BUILD=hardware
 source /opt/ros/$ROS_DISTRO/setup.bash
 
 vcs import src < src/rosbot_xl_manipulation_ros/rosbot_xl_manipulation/rosbot_xl_manipulation.repos
-vcs import src < src/rosbot_xl_ros/rosbot_xl/rosbot_xl_hardware.repos
+vcs import src < src/rosbot_ros/rosbot/rosbot_hardware.repos
 vcs import src < src/open_manipulator_x/open_manipulator_x.repos
 
 rm -r src/rosbot_xl_ros/rosbot_xl_gazebo
@@ -106,13 +106,8 @@ export HUSARION_ROS_BUILD=simulation
 source /opt/ros/$ROS_DISTRO/setup.bash
 
 vcs import src < src/rosbot_xl_manipulation_ros/rosbot_xl_manipulation/rosbot_xl_manipulation.repos
-vcs import src < src/rosbot_xl_ros/rosbot_xl/rosbot_xl_hardware.repos
-vcs import src < src/rosbot_xl_ros/rosbot_xl/rosbot_xl_simulation.repos
+vcs import src < src/rosbot_ros/rosbot/rosbot_simulation.repos
 vcs import src < src/open_manipulator_x/open_manipulator_x.repos
-
-cp -r src/ros2_controllers/diff_drive_controller src
-cp -r src/ros2_controllers/imu_sensor_broadcaster src
-rm -rf src/ros2_controllers
 
 rosdep init
 rosdep update --rosdistro $ROS_DISTRO

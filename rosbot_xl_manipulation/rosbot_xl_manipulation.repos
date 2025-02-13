@@ -2,7 +2,7 @@ repositories:
   rosbot_ros:
     type: git
     url: https://github.com/husarion/rosbot_ros.git
-    version: rosbot_xl_merge
+    version: rosbot-xl-merge
   open_manipulator_x:
     type: git
     url: https://github.com/husarion/open_manipulator_x.git
